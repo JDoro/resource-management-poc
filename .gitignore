@@ -5,6 +5,7 @@ node_modules
 dist
 .output
 .vinxi
+app.config.timestamp_*.js
 
 # Environment variables
 .env
