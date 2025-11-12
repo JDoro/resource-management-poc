@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && tsc --noEmit",
-    "start": "node .output/server/index.mjs"
+    "build": "vite build && tsc --noEmit && node scripts/postbuild.js",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
