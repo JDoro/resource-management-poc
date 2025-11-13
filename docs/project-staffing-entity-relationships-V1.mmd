@@ -1,0 +1,49 @@
+erDiagram
+Consultant {
+number id PK "generated"
+text name
+number years_employed
+number role FK
+}
+ConsultantContract {
+number id PK "generated"
+date start_date
+date end_date "nullable"
+number consultant_id FK
+number contract_id FK
+string role
+number utilization "code enum: 0=Full Time,1=Part Time"
+}
+Contract {
+number id PK "generated"
+text contract_name
+date start_date
+date end_date "nullable"
+number client_id FK
+}
+Client {
+number id PK "generated"
+number ce FK
+text client_name
+text description
+text address
+}
+Role {
+number id PK "generated"
+text name
+text short_name
+number priority
+}
+ConsultantRole {
+number id PK "generated"
+number role_id FK
+number consultant_id FK
+date start_date
+date end_date "nullable"
+}
+
+    ConsultantContract |{--|| Consultant : ""
+    ConsultantContract |{--|| Contract : ""
+    Consultant ||--|{ ConsultantRole : ""
+    Contract |{--|| Client : ""
+    ConsultantRole |{--|| Role : ""

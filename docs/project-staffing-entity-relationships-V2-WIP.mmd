@@ -1,0 +1,58 @@
+erDiagram
+Consultant {
+number id PK "generated"
+text name
+number years_employed
+number role FK
+}
+ConsultantContract {
+number id PK "generated"
+date start_date
+date end_date "nullable"
+number consultant_id FK
+number contract_id FK
+string role
+}
+Contract {
+number id PK "generated"
+text contract_name
+date start_date
+date end_date "nullable"
+number client_id FK
+}
+Client {
+number id PK "generated"
+number ce FK
+text client_name
+text description
+text address
+}
+Sector {
+number id PK "generated"
+text sector_name
+}
+Role {
+number id PK "generated"
+text name
+text short_name
+number priority
+}
+ClientEmployee {
+number id PK "generated"
+text name
+}
+ConsultantRole {
+number id PK "generated"
+number role_id FK
+number consultant_id FK
+date start_date
+date end_date "nullable"
+}
+
+    ConsultantContract |{--|| Consultant : ""
+    ConsultantContract |{--|| Contract : ""
+    Consultant ||--|{ ConsultantRole : ""
+    Contract |{--|| Client : ""
+    Client |{--|| Sector : ""
+    Client ||--|{ ClientEmployee : ""
+    ConsultantRole |{--|| Role : ""
