@@ -34,11 +34,11 @@ dynamic routing, and a seamless user experience through a modern web application
 ### Folder Structure
 
 - `app/`: Contains the source code for the application.
+  - `routes/`: TanStack Router route definitions and configurations.
   - `{feature-name}/`: Feature-specific components, hooks, and utilities.
     - `components/`: Reusable UI components.
     - `hooks/`: Custom React hooks.
     - `api/`: API interaction logic.
-    - `routes/`: Route definitions and configurations.
   - `shared/`: code that is shared across features.
     - `components/`: Global reusable components.
     - `utils/`: Utility functions and helpers.
