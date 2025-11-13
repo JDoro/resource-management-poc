@@ -22,8 +22,7 @@ app/
 └── {feature-name}/            # Feature-specific directories (to be created as needed)
     ├── components/            # Feature-specific UI components
     ├── hooks/                 # Feature-specific custom React hooks
-    ├── api/                   # Feature-specific API interaction logic
-    └── routes/                # Feature-specific route definitions
+    └── api/                   # Feature-specific API interaction logic
 ```
 
 ## Usage Guidelines
@@ -40,7 +39,6 @@ When adding new features, create a directory with the feature name and organize 
 - **components/**: UI components specific to this feature
 - **hooks/**: Custom hooks used only by this feature
 - **api/**: API calls and data fetching logic for this feature
-- **routes/**: Route files specific to this feature (if not using top-level routes/)
 
 ### Temporary Files (`temp/`)
 Use this directory for:
@@ -50,5 +48,10 @@ Use this directory for:
 - Files that should not be committed to the repository
 
 ### Routes (`routes/`)
-TanStack Router automatically generates the route tree from files in this directory. 
+All TanStack Router route files are defined in this top-level directory. 
+TanStack Router automatically generates the route tree from files in this directory.
 Follow TanStack Router file naming conventions for route definition.
+
+Note: Routes are kept at the top level (not within feature directories) because 
+TanStack Router requires all route files to be in a single directory as configured 
+in `tsr.config.json`.
