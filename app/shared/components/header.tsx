@@ -6,9 +6,9 @@ export function Header() {
       <div className="container mx-auto px-6 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-white/20 rounded flex items-center justify-center">
+            <div className="w-4 h-4 bg-white/20 rounded flex items-center justify-center">
               <svg
-                className="w-4 h-4 text-white"
+                className="w-3 h-3 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
