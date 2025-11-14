@@ -5,11 +5,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const shellPath = path.join(__dirname, '..', 'dist', 'client', '_shell.html');
-const indexPath = path.join(__dirname, '..', 'dist', 'client', 'index.html');
-const assetsDir = path.join(__dirname, '..', 'dist', 'client', 'assets');
-
-const shell = fs.readFileSync(shellPath, 'utf-8');
+const clientDir = path.join(__dirname, '..', 'dist', 'client');
+const assetsDir = path.join(clientDir, 'assets');
 
 // Find the CSS file in the assets directory
 let cssFile = '';
@@ -21,7 +18,9 @@ if (fs.existsSync(assetsDir)) {
   }
 }
 
-const html = `<!DOCTYPE html>
+// Function to wrap shell content with HTML structure
+function wrapShellWithHTML(shellContent) {
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,9 +29,32 @@ const html = `<!DOCTYPE html>
     <link rel="stylesheet" href="${cssFile}" type="text/css">` : ''}
 </head>
 <body>
-    <div id="root">${shell}</div>
+    <div id="root">${shellContent}</div>
 </body>
 </html>`;
+}
 
-fs.writeFileSync(indexPath, html);
-console.log('index.html created successfully');
+// Process all HTML files in dist/client and subdirectories
+function processHTMLFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    
+    if (entry.isDirectory() && entry.name !== 'assets') {
+      processHTMLFiles(fullPath);
+    } else if (entry.name === 'index.html' || entry.name === '_shell.html') {
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      
+      // Only process if it doesn't already have DOCTYPE
+      if (!content.trim().startsWith('<!DOCTYPE')) {
+        const wrappedHTML = wrapShellWithHTML(content);
+        fs.writeFileSync(fullPath, wrappedHTML);
+        console.log(`Processed: ${path.relative(clientDir, fullPath)}`);
+      }
+    }
+  }
+}
+
+processHTMLFiles(clientDir);
+console.log('HTML files processed successfully');
