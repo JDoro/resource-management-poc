@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { mockClients, mockConsultants } from '../temp/store/mock-data';
+import { useClientsQuery } from '../temp/hooks/use-clients-query';
+import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
 import type { Client } from '../shared/types';
 
 export const Route = createFileRoute('/bubblechart')({
@@ -7,11 +8,25 @@ export const Route = createFileRoute('/bubblechart')({
 });
 
 function BubblechartRoute() {
+  const { data: clients = [], isLoading: isLoadingClients } =
+    useClientsQuery();
+  const { data: consultants = [], isLoading: isLoadingConsultants } =
+    useConsultantsQuery();
+
   const getConsultantsForClient = (clientId: string) => {
-    return mockConsultants.filter(
-      (consultant) => consultant.clientId === clientId
-    );
+    return consultants.filter((consultant) => consultant.clientId === clientId);
   };
+
+  if (isLoadingClients || isLoadingConsultants) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+          <p className="mt-4 text-gray-600">Loading data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -24,8 +39,8 @@ function BubblechartRoute() {
         </p>
 
         <div className="space-y-6">
-          {mockClients.map((client: Client) => {
-            const consultants = getConsultantsForClient(client.id);
+          {clients.map((client: Client) => {
+            const consultantsForClient = getConsultantsForClient(client.id);
 
             return (
               <div
@@ -45,11 +60,11 @@ function BubblechartRoute() {
 
                 <div>
                   <h4 className="text-lg font-medium text-gray-700 mb-3">
-                    Assigned Consultants ({consultants.length})
+                    Assigned Consultants ({consultantsForClient.length})
                   </h4>
-                  {consultants.length > 0 ? (
+                  {consultantsForClient.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {consultants.map((consultant) => (
+                      {consultantsForClient.map((consultant) => (
                         <div
                           key={consultant.id}
                           className="bg-white rounded-lg p-4 shadow-sm border border-gray-200"
