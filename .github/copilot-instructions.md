@@ -48,6 +48,34 @@ dynamic routing, and a seamless user experience through a modern web application
     - `store/`: mock data for mock api calls.
   - `styles/`: Global styles and Tailwind CSS configurations.
 
+## Workflows
+
+### Creating Pull Requests
+
+- Ensure all code changes are made through pull requests.
+- Include a clear description of the changes made in the pull request.
+- Link related issues or tasks in the pull request description.
+- Ensure that all tests pass before creating a pull request or committing
+  changes to a pull request.
+- Ensure all coding standards are followed and any tool enforcing those standards
+  (e.g., ESLint, Prettier) report no issues.
+- If the changes involve a web application or user interface, include
+  screenshots or screen recordings of the changes made.
+- if the changes involve a web application run the application and
+  verify that the chrome devtools console shows no errors or warnings.
+- If the changes involve bug fixes, include steps to reproduce the issue and
+  verify the fix.
+- If the changes involve performance improvements, include before-and-after
+  benchmarks or metrics.
+
+### Reviewing Pull Requests
+
+- Review code for adherence to coding standards.
+- If the changes involve a web application or user interface, verify the
+  functionality by running the application and testing the changes. Ensuring
+  that the chrome devtools console shows no errors or warnings.
+- Provide constructive feedback and suggestions for improvement.
+
 ## Coding Standards
 
 ### Indentation
