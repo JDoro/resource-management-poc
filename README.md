@@ -2,6 +2,8 @@
 
 This is a resource management application built with TanStack Start and TypeScript.
 
+**[View Live Demo](https://jdoro.github.io/resource-management-poc/)**
+
 ## Development
 
 ```bash
