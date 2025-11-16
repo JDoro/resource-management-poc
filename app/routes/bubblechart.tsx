@@ -1,7 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useClientsQuery } from '../temp/hooks/use-clients-query';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
-import type { Client } from '../shared/types';
+import { useContractsQuery } from '../temp/hooks/use-contracts-query';
+import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
+import { useRolesQuery } from '../temp/hooks/use-roles-query';
+import { useConsultantRolesQuery } from '../temp/hooks/use-consultant-roles-query';
+import type { Client, Consultant, Contract, ConsultantContract, Role, ConsultantRole } from '../shared/types';
 
 export const Route = createFileRoute('/bubblechart')({
   component: BubblechartRoute,
@@ -12,12 +16,50 @@ function BubblechartRoute() {
     useClientsQuery();
   const { data: consultants = [], isLoading: isLoadingConsultants } =
     useConsultantsQuery();
+  const { data: contracts = [], isLoading: isLoadingContracts } =
+    useContractsQuery();
+  const { data: consultantContracts = [], isLoading: isLoadingConsultantContracts } =
+    useConsultantContractsQuery();
+  const { data: roles = [], isLoading: isLoadingRoles } =
+    useRolesQuery();
+  const { data: consultantRoles = [], isLoading: isLoadingConsultantRoles } =
+    useConsultantRolesQuery();
 
-  const getConsultantsForClient = (clientId: string) => {
-    return consultants.filter((consultant) => consultant.clientId === clientId);
+  const getConsultantsForClient = (
+    clientId: string,
+    allConsultants: Consultant[],
+    allContracts: Contract[],
+    allConsultantContracts: ConsultantContract[],
+    allRoles: Role[],
+    allConsultantRoles: ConsultantRole[]
+  ) => {
+    const clientContracts = allContracts.filter(
+      (contract) => contract.client_id === clientId
+    );
+    const clientContractIds = clientContracts.map((contract) => contract.id);
+    const ccsForClient = allConsultantContracts.filter((cc) =>
+      clientContractIds.includes(cc.contract_id)
+    );
+
+    return ccsForClient.map((cc) => {
+      const consultant = allConsultants.find(
+        (c) => c.id === cc.consultant_id
+      );
+      if (!consultant) {
+        return null;
+      }
+      const consultantRole = allConsultantRoles.find(
+        (cr) => cr.consultant_id === consultant.id
+      );
+      const role = allRoles.find((r) => r.id === consultantRole?.role_id);
+      return {
+        ...consultant,
+        role: role?.name || cc.role,
+      };
+    }).filter(consultant => consultant !== null); // Filter out any null consultants
   };
 
-  if (isLoadingClients || isLoadingConsultants) {
+  if (isLoadingClients || isLoadingConsultants || isLoadingContracts || isLoadingConsultantContracts || isLoadingRoles || isLoadingConsultantRoles) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
@@ -40,7 +82,7 @@ function BubblechartRoute() {
 
         <div className="space-y-6">
           {clients.map((client: Client) => {
-            const consultantsForClient = getConsultantsForClient(client.id);
+            const consultantsForClient = getConsultantsForClient(client.id, consultants, contracts, consultantContracts, roles, consultantRoles);
 
             return (
               <div
@@ -51,11 +93,12 @@ function BubblechartRoute() {
                   <h3 className="text-2xl font-semibold text-gray-800">
                     {client.name}
                   </h3>
-                  {client.industry && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      Industry: {client.industry}
-                    </p>
-                  )}
+                  <p className="text-sm text-gray-600 mt-1">
+                    {client.description}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {client.address}
+                  </p>
                 </div>
 
                 <div>
