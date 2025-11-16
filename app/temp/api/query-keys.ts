@@ -17,17 +17,17 @@ export const consultantKeys = {
 };
 
 export const contractsKeys = {
-    all: ['contracts'] as const,
+  all: ['contracts'] as const,
 };
 
 export const consultantContractsKeys = {
-    all: ['consultantContracts'] as const,
+  all: ['consultantContracts'] as const,
 };
 
 export const rolesKeys = {
-    all: ['roles'] as const,
+  all: ['roles'] as const,
 };
 
 export const consultantRolesKeys = {
-    all: ['consultantRoles'] as const,
+  all: ['consultantRoles'] as const,
 };

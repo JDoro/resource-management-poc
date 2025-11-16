@@ -30,16 +30,16 @@ export interface Client {
 }
 
 export interface Role {
-    id: string;
-    name: string;
-    short_name: string;
-    priority: number;
+  id: string;
+  name: string;
+  short_name: string;
+  priority: number;
 }
 
 export interface ConsultantRole {
-    id: string;
-    role_id: string;
-    consultant_id: string;
-    start_date: Date;
-    end_date?: Date;
+  id: string;
+  role_id: string;
+  consultant_id: string;
+  start_date: Date;
+  end_date?: Date;
 }

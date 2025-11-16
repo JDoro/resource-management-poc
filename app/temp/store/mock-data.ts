@@ -185,13 +185,13 @@ export const mockConsultantContracts: ConsultantContract[] = [
 ];
 
 export const mockRoles: Role[] = [
-    {id: '1', name: 'Senior Developer', short_name: 'Sr. Dev', priority: 1},
-    {id: '2', name: 'Project Manager', short_name: 'PM', priority: 2},
-    {id: '3', name: 'DevOps Engineer', short_name: 'DevOps', priority: 3},
+  {id: '1', name: 'Senior Developer', short_name: 'Sr. Dev', priority: 1},
+  {id: '2', name: 'Project Manager', short_name: 'PM', priority: 2},
+  {id: '3', name: 'DevOps Engineer', short_name: 'DevOps', priority: 3},
 ];
 
 export const mockConsultantRoles: ConsultantRole[] = [
-    {id: '1', role_id: '1', consultant_id: '1', start_date: new Date('2023-01-15')},
-    {id: '2', role_id: '2', consultant_id: '2', start_date: new Date('2023-01-20')},
-    {id: '3', role_id: '3', consultant_id: '3', start_date: new Date('2023-02-10')},
-]
+  {id: '1', role_id: '1', consultant_id: '1', start_date: new Date('2023-01-15')},
+  {id: '2', role_id: '2', consultant_id: '2', start_date: new Date('2023-01-20')},
+  {id: '3', role_id: '3', consultant_id: '3', start_date: new Date('2023-02-10')},
+];

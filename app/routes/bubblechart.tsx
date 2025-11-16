@@ -25,33 +25,31 @@ function BubblechartRoute() {
   const { data: consultantRoles = [], isLoading: isLoadingConsultantRoles } =
     useConsultantRolesQuery();
 
-  const getConsultantsForClient = (
-    clientId: string,
-    allConsultants: Consultant[],
-    allContracts: Contract[],
-    allConsultantContracts: ConsultantContract[],
-    allRoles: Role[],
-    allConsultantRoles: ConsultantRole[]
-  ) => {
-    const clientContracts = allContracts.filter(
+  /**
+   * Returns consultants for a given client, using data from component scope.
+   * @param clientId - The ID of the client.
+   * @returns Array of consultants with their roles for the client.
+   */
+  const getConsultantsForClient = (clientId: string) => {
+    const clientContracts = contracts.filter(
       (contract) => contract.client_id === clientId
     );
     const clientContractIds = clientContracts.map((contract) => contract.id);
-    const ccsForClient = allConsultantContracts.filter((cc) =>
+    const ccsForClient = consultantContracts.filter((cc) =>
       clientContractIds.includes(cc.contract_id)
     );
 
     return ccsForClient.map((cc) => {
-      const consultant = allConsultants.find(
+      const consultant = consultants.find(
         (c) => c.id === cc.consultant_id
       );
       if (!consultant) {
         return null;
       }
-      const consultantRole = allConsultantRoles.find(
+      const consultantRole = consultantRoles.find(
         (cr) => cr.consultant_id === consultant.id
       );
-      const role = allRoles.find((r) => r.id === consultantRole?.role_id);
+      const role = roles.find((r) => r.id === consultantRole?.role_id);
       return {
         ...consultant,
         role: role?.name || cc.role,
@@ -59,7 +57,16 @@ function BubblechartRoute() {
     }).filter(consultant => consultant !== null); // Filter out any null consultants
   };
 
-  if (isLoadingClients || isLoadingConsultants || isLoadingContracts || isLoadingConsultantContracts || isLoadingRoles || isLoadingConsultantRoles) {
+  const isLoadingAny = [
+    isLoadingClients,
+    isLoadingConsultants,
+    isLoadingContracts,
+    isLoadingConsultantContracts,
+    isLoadingRoles,
+    isLoadingConsultantRoles,
+  ].some(Boolean);
+
+  if (isLoadingAny) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
@@ -82,7 +89,7 @@ function BubblechartRoute() {
 
         <div className="space-y-6">
           {clients.map((client: Client) => {
-            const consultantsForClient = getConsultantsForClient(client.id, consultants, contracts, consultantContracts, roles, consultantRoles);
+            const consultantsForClient = getConsultantsForClient(client.id);
 
             return (
               <div
