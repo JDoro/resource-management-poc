@@ -58,16 +58,16 @@ export async function fetchConsultantContracts(): Promise<ConsultantContract[]> 
  * Fetches all roles from the mock API
  */
 export async function fetchRoles(): Promise<Role[]> {
-    await simulateApiDelay();
-    return mockRoles;
+  await simulateApiDelay();
+  return mockRoles;
 }
 
 /**
  * Fetches all consultant roles from the mock API
  */
 export async function fetchConsultantRoles(): Promise<ConsultantRole[]> {
-    await simulateApiDelay();
-    return mockConsultantRoles;
+  await simulateApiDelay();
+  return mockConsultantRoles;
 }
 
 /**
