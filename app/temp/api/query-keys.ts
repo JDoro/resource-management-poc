@@ -15,3 +15,19 @@ export const consultantKeys = {
   byClient: (clientId: string) =>
     [...consultantKeys.all, 'byClient', clientId] as const,
 };
+
+export const contractsKeys = {
+    all: ['contracts'] as const,
+};
+
+export const consultantContractsKeys = {
+    all: ['consultantContracts'] as const,
+};
+
+export const rolesKeys = {
+    all: ['roles'] as const,
+};
+
+export const consultantRolesKeys = {
+    all: ['consultantRoles'] as const,
+};
