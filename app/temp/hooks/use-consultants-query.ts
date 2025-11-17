@@ -6,5 +6,6 @@ export function useConsultantsQuery() {
   return useQuery({
     queryKey: consultantKeys.all,
     queryFn: () => fetchConsultants(),
+    ssr: false,
   });
 }

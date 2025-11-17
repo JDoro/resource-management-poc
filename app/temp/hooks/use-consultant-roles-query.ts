@@ -6,5 +6,6 @@ export function useConsultantRolesQuery() {
   return useQuery({
     queryKey: consultantRolesKeys.all,
     queryFn: () => fetchConsultantRoles(),
+    ssr: false,
   });
 }
