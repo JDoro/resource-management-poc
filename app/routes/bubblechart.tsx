@@ -6,24 +6,32 @@ import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contra
 import { useRolesQuery } from '../temp/hooks/use-roles-query';
 import { useConsultantRolesQuery } from '../temp/hooks/use-consultant-roles-query';
 import type { Client, Consultant, Contract, ConsultantContract, Role, ConsultantRole } from '../shared/types';
+import { fetchClients, fetchConsultants, fetchContracts, fetchConsultantContracts, fetchRoles, fetchConsultantRoles } from '../temp/api/mock-api';
 
 export const Route = createFileRoute('/bubblechart')({
   component: BubblechartRoute,
+  loader: async () => {
+    // Prefetch all data
+    const [clients, consultants, contracts, consultantContracts, roles, consultantRoles] = await Promise.all([
+      fetchClients(),
+      fetchConsultants(),
+      fetchContracts(),
+      fetchConsultantContracts(),
+      fetchRoles(),
+      fetchConsultantRoles(),
+    ]);
+    return { clients, consultants, contracts, consultantContracts, roles, consultantRoles };
+  },
 });
 
 function BubblechartRoute() {
-  const { data: clients = [], isLoading: isLoadingClients } =
-    useClientsQuery();
-  const { data: consultants = [], isLoading: isLoadingConsultants } =
-    useConsultantsQuery();
-  const { data: contracts = [], isLoading: isLoadingContracts } =
-    useContractsQuery();
-  const { data: consultantContracts = [], isLoading: isLoadingConsultantContracts } =
-    useConsultantContractsQuery();
-  const { data: roles = [], isLoading: isLoadingRoles } =
-    useRolesQuery();
-  const { data: consultantRoles = [], isLoading: isLoadingConsultantRoles } =
-    useConsultantRolesQuery();
+  const loaderData = Route.useLoaderData();
+  const clients = loaderData.clients;
+  const consultants = loaderData.consultants;
+  const contracts = loaderData.contracts;
+  const consultantContracts = loaderData.consultantContracts;
+  const roles = loaderData.roles;
+  const consultantRoles = loaderData.consultantRoles;
 
   /**
    * Returns consultants for a given client, using data from component scope.
@@ -56,26 +64,6 @@ function BubblechartRoute() {
       };
     }).filter(consultant => consultant !== null); // Filter out any null consultants
   };
-
-  const isLoadingAny = [
-    isLoadingClients,
-    isLoadingConsultants,
-    isLoadingContracts,
-    isLoadingConsultantContracts,
-    isLoadingRoles,
-    isLoadingConsultantRoles,
-  ].some(Boolean);
-
-  if (isLoadingAny) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-4 text-gray-600">Loading data...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
