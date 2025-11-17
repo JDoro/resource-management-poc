@@ -6,6 +6,5 @@ export function useContractsQuery() {
   return useQuery({
     queryKey: contractsKeys.all,
     queryFn: () => fetchContracts(),
-    ssr: false,
   });
 }

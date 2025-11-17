@@ -6,6 +6,5 @@ export function useRolesQuery() {
   return useQuery({
     queryKey: rolesKeys.all,
     queryFn: () => fetchRoles(),
-    ssr: false,
   });
 }

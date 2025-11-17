@@ -6,6 +6,5 @@ export function useClientsQuery() {
   return useQuery({
     queryKey: clientKeys.all,
     queryFn: () => fetchClients(),
-    ssr: false,
   });
 }
