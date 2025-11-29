@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useForm } from '@tanstack/react-form';
-import { fetchConsultantById, updateConsultant } from '../temp/api/mock-api';
+import { fetchConsultantById } from '../temp/api/mock-api';
+import { useUpdateConsultantMutation } from '../temp/hooks/use-update-consultant-mutation';
 
 export const Route = createFileRoute('/consultants/$id_/edit')({
   component: ConsultantEditRoute,
@@ -14,6 +15,9 @@ function ConsultantEditRoute() {
   const { id } = Route.useParams();
   const { consultant } = Route.useLoaderData();
   const navigate = useNavigate();
+  const updateConsultantMutation = useUpdateConsultantMutation({
+    onSuccess: () => navigate({ to: '/consultants/$id', params: { id } }),
+  });
 
   const form = useForm({
     defaultValues: {
@@ -21,8 +25,7 @@ function ConsultantEditRoute() {
       years_employed: consultant?.years_employed || 0,
     },
     onSubmit: async ({ value }) => {
-      await updateConsultant(id, value);
-      navigate({ to: '/consultants/$id', params: { id } });
+      await updateConsultantMutation.mutateAsync({ id, data: value });
     },
   });
 
