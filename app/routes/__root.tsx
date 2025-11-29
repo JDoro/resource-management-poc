@@ -25,9 +25,7 @@ function getQueryClient() {
     return makeQueryClient();
   } else {
     // Browser: make a new query client if we don't already have one
-    // This is important because we don't want to re-create a new client if React
-    // suspends during the initial render. This may not be needed with React 19
-    // but we still need to be defensive in case of hydration.
+    // This prevents re-creating a client if React suspends during the initial render.
     if (!browserQueryClient) browserQueryClient = makeQueryClient();
     return browserQueryClient;
   }
