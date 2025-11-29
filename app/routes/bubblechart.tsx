@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useClientsQuery } from '../temp/hooks/use-clients-query';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
 import { useContractsQuery } from '../temp/hooks/use-contracts-query';
@@ -103,11 +103,13 @@ function BubblechartRoute() {
                   {consultantsForClient.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {consultantsForClient.map((consultant) => (
-                        <div
+                        <Link
                           key={consultant.id}
-                          className="bg-white rounded-lg p-4 shadow-sm border border-gray-200"
+                          to="/consultants/$id"
+                          params={{ id: consultant.id }}
+                          className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all"
                         >
-                          <p className="font-medium text-gray-800">
+                          <p className="font-medium text-gray-800 hover:text-blue-600">
                             {consultant.name}
                           </p>
                           {consultant.role && (
@@ -115,7 +117,7 @@ function BubblechartRoute() {
                               {consultant.role}
                             </p>
                           )}
-                        </div>
+                        </Link>
                       ))}
                     </div>
                   ) : (

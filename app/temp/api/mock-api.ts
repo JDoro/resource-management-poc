@@ -39,6 +39,14 @@ export async function fetchConsultants(): Promise<Consultant[]> {
 }
 
 /**
+ * Fetches a single consultant by ID from the mock API
+ */
+export async function fetchConsultantById(id: string): Promise<Consultant | null> {
+  await simulateApiDelay();
+  return mockConsultants.find((consultant) => consultant.id === id) || null;
+}
+
+/**
  * Fetches all contracts from the mock API
  */
 export async function fetchContracts(): Promise<Contract[]> {
