@@ -1,23 +1,30 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { fetchConsultantById } from '../temp/api/mock-api';
-import { fetchConsultantContracts, fetchContracts, fetchClients } from '../temp/api/mock-api';
+import { useConsultantQuery } from '../temp/hooks/use-consultant-query';
+import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
+import { useContractsQuery } from '../temp/hooks/use-contracts-query';
+import { useClientsQuery } from '../temp/hooks/use-clients-query';
 
 export const Route = createFileRoute('/consultants/$id')({
   component: ConsultantDetailRoute,
-  loader: async ({ params }) => {
-    const [consultant, consultantContracts, contracts, clients] = await Promise.all([
-      fetchConsultantById(params.id),
-      fetchConsultantContracts(),
-      fetchContracts(),
-      fetchClients(),
-    ]);
-    return { consultant, consultantContracts, contracts, clients };
-  },
 });
 
 function ConsultantDetailRoute() {
   const { id } = Route.useParams();
-  const { consultant, consultantContracts, contracts, clients } = Route.useLoaderData();
+  
+  const { data: consultant, isLoading: isLoadingConsultant } = useConsultantQuery(id);
+  const { data: consultantContracts = [], isLoading: isLoadingContracts } = useConsultantContractsQuery();
+  const { data: contracts = [], isLoading: isLoadingContractsList } = useContractsQuery();
+  const { data: clients = [], isLoading: isLoadingClients } = useClientsQuery();
+
+  const isLoading = isLoadingConsultant || isLoadingContracts || isLoadingContractsList || isLoadingClients;
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        <p className="text-gray-600">Loading consultant details...</p>
+      </div>
+    );
+  }
 
   if (!consultant) {
     return (
