@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useForm } from '@tanstack/react-form';
-import { useQueryClient } from '@tanstack/react-query';
-import { fetchConsultantById, updateConsultant } from '../temp/api/mock-api';
-import { consultantKeys } from '../temp/api/query-keys';
+import { fetchConsultantById } from '../temp/api/mock-api';
+import { useUpdateConsultantMutation } from '../temp/hooks/use-update-consultant-mutation';
 
 export const Route = createFileRoute('/consultants/$id_/edit')({
   component: ConsultantEditRoute,
@@ -16,7 +15,7 @@ function ConsultantEditRoute() {
   const { id } = Route.useParams();
   const { consultant } = Route.useLoaderData();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const updateConsultantMutation = useUpdateConsultantMutation();
 
   const form = useForm({
     defaultValues: {
@@ -24,8 +23,7 @@ function ConsultantEditRoute() {
       years_employed: consultant?.years_employed || 0,
     },
     onSubmit: async ({ value }) => {
-      await updateConsultant(id, value);
-      await queryClient.invalidateQueries({ queryKey: consultantKeys.all });
+      await updateConsultantMutation.mutateAsync({ id, data: value });
       navigate({ to: '/consultants/$id', params: { id } });
     },
   });
