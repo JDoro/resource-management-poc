@@ -97,3 +97,19 @@ export async function fetchConsultantsByClientId(
     consultantIds.includes(consultant.id)
   );
 }
+
+/**
+ * Updates a consultant by ID
+ */
+export async function updateConsultant(
+  id: string,
+  data: Partial<Omit<Consultant, 'id'>>
+): Promise<Consultant | null> {
+  await simulateApiDelay();
+  const index = mockConsultants.findIndex((consultant) => consultant.id === id);
+  if (index === -1) {
+    return null;
+  }
+  mockConsultants[index] = { ...mockConsultants[index], ...data };
+  return mockConsultants[index];
+}
