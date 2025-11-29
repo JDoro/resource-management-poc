@@ -117,7 +117,7 @@ function ConsultantEditRoute() {
                 value < 0
                   ? 'Years employed cannot be negative'
                   : value > 50
-                    ? 'Years employed seems too high'
+                    ? 'Years employed cannot exceed 50'
                     : undefined,
             }}
           >
