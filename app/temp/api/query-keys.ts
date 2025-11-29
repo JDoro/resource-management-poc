@@ -14,6 +14,7 @@ export const consultantKeys = {
   list: () => [...consultantKeys.lists()] as const,
   byClient: (clientId: string) =>
     [...consultantKeys.all, 'byClient', clientId] as const,
+  detail: (id: string) => [...consultantKeys.all, 'detail', id] as const,
 };
 
 export const contractsKeys = {
