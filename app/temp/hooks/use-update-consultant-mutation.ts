@@ -8,7 +8,11 @@ interface UpdateConsultantVariables {
   data: Partial<Omit<Consultant, 'id'>>;
 }
 
-export function useUpdateConsultantMutation() {
+interface UseUpdateConsultantMutationOptions {
+  onSuccess?: () => void;
+}
+
+export function useUpdateConsultantMutation(options?: UseUpdateConsultantMutationOptions) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,6 +20,7 @@ export function useUpdateConsultantMutation() {
       updateConsultant(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: consultantKeys.all });
+      options?.onSuccess?.();
     },
   });
 }

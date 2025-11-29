@@ -15,7 +15,9 @@ function ConsultantEditRoute() {
   const { id } = Route.useParams();
   const { consultant } = Route.useLoaderData();
   const navigate = useNavigate();
-  const updateConsultantMutation = useUpdateConsultantMutation();
+  const updateConsultantMutation = useUpdateConsultantMutation({
+    onSuccess: () => navigate({ to: '/consultants/$id', params: { id } }),
+  });
 
   const form = useForm({
     defaultValues: {
@@ -24,7 +26,6 @@ function ConsultantEditRoute() {
     },
     onSubmit: async ({ value }) => {
       await updateConsultantMutation.mutateAsync({ id, data: value });
-      navigate({ to: '/consultants/$id', params: { id } });
     },
   });
 
