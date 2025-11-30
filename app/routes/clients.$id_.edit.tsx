@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { fetchClientById } from '../temp/api/mock-api';
 import { useUpdateClientMutation } from '../temp/hooks/use-update-client-mutation';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
+import { useContractsQuery } from '../temp/hooks/use-contracts-query';
+import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
 import { useAssignConsultantToClientMutation } from '../temp/hooks/use-assign-consultant-to-client-mutation';
 
 export const Route = createFileRoute('/clients/$id_/edit')({
@@ -24,12 +26,46 @@ function ClientEditRoute() {
 
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
   const { data: consultants = [] } = useConsultantsQuery();
+  const { data: contracts = [] } = useContractsQuery();
+  const { data: consultantContracts = [] } = useConsultantContractsQuery();
   const assignConsultantMutation = useAssignConsultantToClientMutation({
     onSuccess: () => {
       setAssignmentSuccess(true);
       setTimeout(() => setAssignmentSuccess(false), 3000);
     },
   });
+
+  // Get contract IDs for this client (using Set for O(1) lookup)
+  const clientContractIds = new Set(
+    contracts
+      .filter((contract) => contract.client_id === id)
+      .map((contract) => contract.id)
+  );
+
+  // Get consultant contracts for this client (O(n) instead of O(n*m))
+  const clientConsultantContracts = consultantContracts.filter((cc) =>
+    clientContractIds.has(cc.contract_id)
+  );
+
+  // Get consultant IDs already assigned to this client
+  const assignedConsultantIds = new Set(
+    clientConsultantContracts.map((cc) => cc.consultant_id)
+  );
+
+  // Get assigned consultants with their contract details
+  const assignedConsultants = clientConsultantContracts.map((cc) => {
+    const consultant = consultants.find((c) => c.id === cc.consultant_id);
+    return {
+      ...cc,
+      consultantName: consultant?.name || 'Unknown Consultant',
+      yearsEmployed: consultant?.years_employed || 0,
+    };
+  });
+
+  // Filter out already assigned consultants from the dropdown
+  const availableConsultants = consultants.filter(
+    (consultant) => !assignedConsultantIds.has(consultant.id)
+  );
 
   const form = useForm({
     defaultValues: {
@@ -244,6 +280,52 @@ function ClientEditRoute() {
         </form>
       </div>
 
+      {/* Currently Assigned Consultants */}
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Assigned Consultants ({assignedConsultants.length})
+          </h2>
+          <p className="text-gray-600">
+            Consultants currently assigned to this client
+          </p>
+        </div>
+
+        {assignedConsultants.length > 0 ? (
+          <div className="space-y-3">
+            {assignedConsultants.map((assignment) => (
+              <div
+                key={assignment.id}
+                className="flex justify-between items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200"
+              >
+                <div>
+                  <span className="font-medium text-gray-800">
+                    {assignment.consultantName}
+                  </span>
+                  <span className="text-gray-500 ml-2">
+                    ({assignment.yearsEmployed} {assignment.yearsEmployed === 1 ? 'year' : 'years'} employed)
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-600">{assignment.role}</span>
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                    assignment.utilization === 0 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {assignment.utilization === 0 ? 'Full Time' : 'Part Time'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 italic">
+            No consultants assigned to this client yet
+          </p>
+        )}
+      </div>
+
       {/* Assign Consultant Form */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
@@ -294,7 +376,7 @@ function ClientEditRoute() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                 >
                   <option value="">Select a consultant...</option>
-                  {consultants.map((consultant) => (
+                  {availableConsultants.map((consultant) => (
                     <option key={consultant.id} value={consultant.id}>
                       {consultant.name}
                     </option>
