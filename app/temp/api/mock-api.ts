@@ -113,3 +113,77 @@ export async function updateConsultant(
   mockConsultants[index] = { ...mockConsultants[index], ...data };
   return mockConsultants[index];
 }
+
+/**
+ * Creates a new contract
+ */
+export async function createContract(
+  data: Omit<Contract, 'id'>
+): Promise<Contract> {
+  await simulateApiDelay();
+  const newId = String(Math.max(...mockContracts.map((c) => Number(c.id)), 0) + 1);
+  const newContract: Contract = { id: newId, ...data };
+  mockContracts.push(newContract);
+  return newContract;
+}
+
+/**
+ * Creates a new consultant contract
+ */
+export async function createConsultantContract(
+  data: Omit<ConsultantContract, 'id'>
+): Promise<ConsultantContract> {
+  await simulateApiDelay();
+  const newId = String(Math.max(...mockConsultantContracts.map((cc) => Number(cc.id)), 0) + 1);
+  const newConsultantContract: ConsultantContract = { id: newId, ...data };
+  mockConsultantContracts.push(newConsultantContract);
+  return newConsultantContract;
+}
+
+/**
+ * Assigns a consultant to a client.
+ * Creates a new Contract for the client if one doesn't exist,
+ * then creates a ConsultantContract linking the consultant to that contract.
+ */
+export interface AssignConsultantToClientParams {
+  consultantId: string;
+  clientId: string;
+  role: string;
+  utilization: 0 | 1;
+  startDate: Date;
+}
+
+export async function assignConsultantToClient(
+  params: AssignConsultantToClientParams
+): Promise<{ contract: Contract; consultantContract: ConsultantContract }> {
+  await simulateApiDelay();
+
+  const { consultantId, clientId, role, utilization, startDate } = params;
+
+  // Check if a contract exists for this client
+  let contract = mockContracts.find((c) => c.client_id === clientId);
+
+  // If no contract exists, create one
+  if (!contract) {
+    const client = mockClients.find((c) => c.id === clientId);
+    const contractName = client
+      ? `${client.name} Main Contract`
+      : `Client ${clientId} Contract`;
+    contract = await createContract({
+      contract_name: contractName,
+      start_date: startDate,
+      client_id: clientId,
+    });
+  }
+
+  // Create the consultant contract
+  const consultantContract = await createConsultantContract({
+    consultant_id: consultantId,
+    contract_id: contract.id,
+    role,
+    utilization,
+    start_date: startDate,
+  });
+
+  return { contract, consultantContract };
+}
