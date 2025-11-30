@@ -49,7 +49,7 @@ function ClientEditRoute() {
       utilization: 0 as 0 | 1,
       startDate: new Date().toISOString().split('T')[0],
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       await assignConsultantMutation.mutateAsync({
         consultantId: value.consultantId,
         clientId: id,
@@ -57,6 +57,7 @@ function ClientEditRoute() {
         utilization: value.utilization,
         startDate: new Date(value.startDate),
       });
+      formApi.reset();
     },
   });
 
