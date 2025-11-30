@@ -85,9 +85,32 @@ function BubblechartRoute() {
                 className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200"
               >
                 <div className="mb-4">
-                  <h3 className="text-2xl font-semibold text-gray-800">
-                    {client.name}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-2xl font-semibold text-gray-800">
+                      {client.name}
+                    </h3>
+                    <Link
+                      to="/clients/$id"
+                      params={{ id: client.id }}
+                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      title={`View ${client.name} details`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
                   <p className="text-sm text-gray-600 mt-1">
                     {client.description}
                   </p>
