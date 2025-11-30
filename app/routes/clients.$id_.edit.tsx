@@ -40,24 +40,25 @@ function ClientEditRoute() {
     (contract) => contract.client_id === id
   );
 
+  // Get consultant contracts for this client
+  const clientConsultantContracts = consultantContracts.filter((cc) =>
+    clientContracts.some((c) => c.id === cc.contract_id)
+  );
+
   // Get consultant IDs already assigned to this client
   const assignedConsultantIds = new Set(
-    consultantContracts
-      .filter((cc) => clientContracts.some((c) => c.id === cc.contract_id))
-      .map((cc) => cc.consultant_id)
+    clientConsultantContracts.map((cc) => cc.consultant_id)
   );
 
   // Get assigned consultants with their contract details
-  const assignedConsultants = consultantContracts
-    .filter((cc) => clientContracts.some((c) => c.id === cc.contract_id))
-    .map((cc) => {
-      const consultant = consultants.find((c) => c.id === cc.consultant_id);
-      return {
-        ...cc,
-        consultantName: consultant?.name || 'Unknown Consultant',
-        yearsEmployed: consultant?.years_employed || 0,
-      };
-    });
+  const assignedConsultants = clientConsultantContracts.map((cc) => {
+    const consultant = consultants.find((c) => c.id === cc.consultant_id);
+    return {
+      ...cc,
+      consultantName: consultant?.name || 'Unknown Consultant',
+      yearsEmployed: consultant?.years_employed || 0,
+    };
+  });
 
   // Filter out already assigned consultants from the dropdown
   const availableConsultants = consultants.filter(
