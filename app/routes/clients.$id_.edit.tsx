@@ -35,14 +35,16 @@ function ClientEditRoute() {
     },
   });
 
-  // Get contracts for this client
-  const clientContracts = contracts.filter(
-    (contract) => contract.client_id === id
+  // Get contract IDs for this client (using Set for O(1) lookup)
+  const clientContractIds = new Set(
+    contracts
+      .filter((contract) => contract.client_id === id)
+      .map((contract) => contract.id)
   );
 
-  // Get consultant contracts for this client
+  // Get consultant contracts for this client (O(n) instead of O(n*m))
   const clientConsultantContracts = consultantContracts.filter((cc) =>
-    clientContracts.some((c) => c.id === cc.contract_id)
+    clientContractIds.has(cc.contract_id)
   );
 
   // Get consultant IDs already assigned to this client
@@ -291,27 +293,27 @@ function ClientEditRoute() {
 
         {assignedConsultants.length > 0 ? (
           <div className="space-y-3">
-            {assignedConsultants.map((consultant) => (
+            {assignedConsultants.map((assignment) => (
               <div
-                key={consultant.id}
+                key={assignment.id}
                 className="flex justify-between items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200"
               >
                 <div>
                   <span className="font-medium text-gray-800">
-                    {consultant.consultantName}
+                    {assignment.consultantName}
                   </span>
                   <span className="text-gray-500 ml-2">
-                    ({consultant.yearsEmployed} {consultant.yearsEmployed === 1 ? 'year' : 'years'} employed)
+                    ({assignment.yearsEmployed} {assignment.yearsEmployed === 1 ? 'year' : 'years'} employed)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-600">{consultant.role}</span>
+                  <span className="text-gray-600">{assignment.role}</span>
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    consultant.utilization === 0 
+                    assignment.utilization === 0 
                       ? 'bg-green-100 text-green-800' 
                       : 'bg-yellow-100 text-yellow-800'
                   }`}>
-                    {consultant.utilization === 0 ? 'Full Time' : 'Part Time'}
+                    {assignment.utilization === 0 ? 'Full Time' : 'Part Time'}
                   </span>
                 </div>
               </div>
