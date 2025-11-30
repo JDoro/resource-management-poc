@@ -6,6 +6,7 @@ export const clientKeys = {
   all: ['clients'] as const,
   lists: () => [...clientKeys.all, 'list'] as const,
   list: () => [...clientKeys.lists()] as const,
+  detail: (id: string) => [...clientKeys.all, 'detail', id] as const,
 };
 
 export const consultantKeys = {
