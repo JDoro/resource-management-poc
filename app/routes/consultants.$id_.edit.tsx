@@ -52,8 +52,10 @@ function ConsultantEditRoute() {
     };
   });
 
-  // Get client IDs that this consultant is already assigned to
-  const assignedClientIds = new Set(enrichedAssignments.map((ea) => ea.clientId));
+  // Get client IDs that this consultant is already assigned to (filter out empty strings)
+  const assignedClientIds = new Set(
+    enrichedAssignments.map((ea) => ea.clientId).filter((id) => id !== '')
+  );
 
   // Filter out clients that this consultant is already assigned to
   const availableClients = clients.filter((client) => !assignedClientIds.has(client.id));
