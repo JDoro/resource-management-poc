@@ -31,6 +31,30 @@ export async function fetchClients(): Promise<Client[]> {
 }
 
 /**
+ * Fetches a single client by ID from the mock API
+ */
+export async function fetchClientById(id: string): Promise<Client | null> {
+  await simulateApiDelay();
+  return mockClients.find((client) => client.id === id) || null;
+}
+
+/**
+ * Updates a client by ID
+ */
+export async function updateClient(
+  id: string,
+  data: Partial<Omit<Client, 'id'>>
+): Promise<Client | null> {
+  await simulateApiDelay();
+  const index = mockClients.findIndex((client) => client.id === id);
+  if (index === -1) {
+    return null;
+  }
+  mockClients[index] = { ...mockClients[index], ...data };
+  return mockClients[index];
+}
+
+/**
  * Fetches all consultants from the mock API
  */
 export async function fetchConsultants(): Promise<Consultant[]> {
