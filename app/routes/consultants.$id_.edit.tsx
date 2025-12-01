@@ -320,6 +320,7 @@ function ConsultantEditRoute() {
                       <button
                         onClick={() => setEditingContractId(assignment.id)}
                         className="mt-2 px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors"
+                        aria-label={`Edit contract for ${assignment.clientName}`}
                       >
                         Edit
                       </button>
@@ -675,7 +676,19 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
         )}
       </form.Field>
 
-      <form.Field name="endDate">
+      <form.Field
+        name="endDate"
+        validators={{
+          onChange: ({ value, fieldApi }) => {
+            if (!value) return undefined;
+            const startDate = fieldApi.form.getFieldValue('startDate');
+            if (startDate && new Date(value) < new Date(startDate)) {
+              return 'End date must be after start date';
+            }
+            return undefined;
+          },
+        }}
+      >
         {(field) => (
           <div>
             <label
@@ -692,6 +705,11 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
               onChange={(e) => field.handleChange(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
             />
+            {field.state.meta.errors.length > 0 && (
+              <p className="mt-1 text-sm text-red-600">
+                {field.state.meta.errors.join(', ')}
+              </p>
+            )}
           </div>
         )}
       </form.Field>

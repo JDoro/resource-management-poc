@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateConsultantContract } from '../api/mock-api';
-import { consultantContractsKeys } from '../api/query-keys';
+import { consultantContractsKeys, contractsKeys } from '../api/query-keys';
 import type { ConsultantContract } from '../../shared/types';
 
 interface UpdateConsultantContractVariables {
@@ -22,6 +22,7 @@ export function useUpdateConsultantContractMutation(
       updateConsultantContract(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: consultantContractsKeys.all });
+      queryClient.invalidateQueries({ queryKey: contractsKeys.all });
       options?.onSuccess?.();
     },
   });
