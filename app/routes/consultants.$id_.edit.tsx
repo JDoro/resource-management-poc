@@ -5,6 +5,8 @@ import { fetchConsultantById } from '../temp/api/mock-api';
 import { useUpdateConsultantMutation } from '../temp/hooks/use-update-consultant-mutation';
 import { useClientsQuery } from '../temp/hooks/use-clients-query';
 import { useAssignConsultantToClientMutation } from '../temp/hooks/use-assign-consultant-to-client-mutation';
+import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
+import { useContractsQuery } from '../temp/hooks/use-contracts-query';
 
 export const Route = createFileRoute('/consultants/$id_/edit')({
   component: ConsultantEditRoute,
@@ -24,12 +26,39 @@ function ConsultantEditRoute() {
   
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
   const { data: clients = [] } = useClientsQuery();
+  const { data: consultantContracts = [] } = useConsultantContractsQuery();
+  const { data: contracts = [] } = useContractsQuery();
   const assignToClientMutation = useAssignConsultantToClientMutation({
     onSuccess: () => {
       setAssignmentSuccess(true);
       setTimeout(() => setAssignmentSuccess(false), 3000);
     },
   });
+
+  // Get current assignments for this consultant
+  const currentAssignments = consultantContracts.filter(
+    (cc) => cc.consultant_id === id
+  );
+
+  // Enrich assignments with client information
+  const enrichedAssignments = currentAssignments.map((cc) => {
+    const contract = contracts.find((c) => c.id === cc.contract_id);
+    const client = contract ? clients.find((cl) => cl.id === contract.client_id) : null;
+    return {
+      ...cc,
+      contractName: contract?.contract_name || 'Unknown Contract',
+      clientName: client?.name || 'Unknown Client',
+      clientId: contract?.client_id || '',
+    };
+  });
+
+  // Get client IDs that this consultant is already assigned to (filter out empty strings)
+  const assignedClientIds = new Set(
+    enrichedAssignments.map((ea) => ea.clientId).filter((id) => id !== '')
+  );
+
+  // Filter out clients that this consultant is already assigned to
+  const availableClients = clients.filter((client) => !assignedClientIds.has(client.id));
 
   const form = useForm({
     defaultValues: {
@@ -209,6 +238,66 @@ function ConsultantEditRoute() {
         </form>
       </div>
 
+      {/* Current Client Assignments */}
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Current Client Assignments ({enrichedAssignments.length})
+          </h2>
+          <p className="text-gray-600">
+            Clients this consultant is currently assigned to
+          </p>
+        </div>
+
+        {enrichedAssignments.length > 0 ? (
+          <div className="space-y-4">
+            {enrichedAssignments.map((assignment) => (
+              <div
+                key={assignment.id}
+                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium text-gray-800">
+                      {assignment.clientName}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Contract: {assignment.contractName}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Role: {assignment.role}
+                    </p>
+                  </div>
+                  <div className="text-right text-sm text-gray-500">
+                    <p>
+                      Started: {new Date(assignment.start_date).toLocaleDateString()}
+                    </p>
+                    {assignment.end_date && (
+                      <p>
+                        Ended: {new Date(assignment.end_date).toLocaleDateString()}
+                      </p>
+                    )}
+                    <p className="mt-1">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        assignment.utilization === 0 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {assignment.utilization === 0 ? 'Full Time' : 'Part Time'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 italic">
+            No clients assigned to this consultant yet
+          </p>
+        )}
+      </div>
+
       {/* Assign to Client Form */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
@@ -228,6 +317,13 @@ function ConsultantEditRoute() {
           </div>
         )}
 
+        {availableClients.length === 0 ? (
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+            <p className="text-gray-600 italic">
+              This consultant is already assigned to all available clients.
+            </p>
+          </div>
+        ) : (
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -259,7 +355,7 @@ function ConsultantEditRoute() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                 >
                   <option value="">Select a client...</option>
-                  {clients.map((client) => (
+                  {availableClients.map((client) => (
                     <option key={client.id} value={client.id}>
                       {client.name}
                     </option>
@@ -382,6 +478,7 @@ function ConsultantEditRoute() {
             </assignmentForm.Subscribe>
           </div>
         </form>
+        )}
       </div>
     </div>
   );
