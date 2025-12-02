@@ -7,6 +7,7 @@ import { useClientsQuery } from '../temp/hooks/use-clients-query';
 import { useAssignConsultantToClientMutation } from '../temp/hooks/use-assign-consultant-to-client-mutation';
 import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
 import { useContractsQuery } from '../temp/hooks/use-contracts-query';
+import { useUpdateConsultantContractMutation } from '../temp/hooks/use-update-consultant-contract-mutation';
 
 export const Route = createFileRoute('/consultants/$id_/edit')({
   component: ConsultantEditRoute,
@@ -25,6 +26,8 @@ function ConsultantEditRoute() {
   });
   
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
+  const [editingContractId, setEditingContractId] = useState<string | null>(null);
+  const [editUpdateSuccess, setEditUpdateSuccess] = useState(false);
   const { data: clients = [] } = useClientsQuery();
   const { data: consultantContracts = [] } = useConsultantContractsQuery();
   const { data: contracts = [] } = useContractsQuery();
@@ -32,6 +35,13 @@ function ConsultantEditRoute() {
     onSuccess: () => {
       setAssignmentSuccess(true);
       setTimeout(() => setAssignmentSuccess(false), 3000);
+    },
+  });
+  const updateContractMutation = useUpdateConsultantContractMutation({
+    onSuccess: () => {
+      setEditingContractId(null);
+      setEditUpdateSuccess(true);
+      setTimeout(() => setEditUpdateSuccess(false), 3000);
     },
   });
 
@@ -249,6 +259,14 @@ function ConsultantEditRoute() {
           </p>
         </div>
 
+        {editUpdateSuccess && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-green-800 font-medium">
+              ✓ Contract updated successfully!
+            </p>
+          </div>
+        )}
+
         {enrichedAssignments.length > 0 ? (
           <div className="space-y-4">
             {enrichedAssignments.map((assignment) => (
@@ -256,38 +274,60 @@ function ConsultantEditRoute() {
                 key={assignment.id}
                 className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200"
               >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium text-gray-800">
-                      {assignment.clientName}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Contract: {assignment.contractName}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Role: {assignment.role}
-                    </p>
-                  </div>
-                  <div className="text-right text-sm text-gray-500">
-                    <p>
-                      Started: {new Date(assignment.start_date).toLocaleDateString()}
-                    </p>
-                    {assignment.end_date && (
-                      <p>
-                        Ended: {new Date(assignment.end_date).toLocaleDateString()}
+                {editingContractId === assignment.id ? (
+                  <EditContractForm
+                    assignment={assignment}
+                    onSave={async (data) => {
+                      await updateContractMutation.mutateAsync({
+                        id: assignment.id,
+                        data,
+                      });
+                    }}
+                    onCancel={() => setEditingContractId(null)}
+                    isSubmitting={updateContractMutation.isPending}
+                  />
+                ) : (
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        {assignment.clientName}
                       </p>
-                    )}
-                    <p className="mt-1">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        assignment.utilization === 0 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {assignment.utilization === 0 ? 'Full Time' : 'Part Time'}
-                      </span>
-                    </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Contract: {assignment.contractName}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Role: {assignment.role}
+                      </p>
+                    </div>
+                    <div className="text-right text-sm text-gray-500">
+                      <p>
+                        Started: {new Date(assignment.start_date).toLocaleDateString()}
+                      </p>
+                      {assignment.end_date && (
+                        <p>
+                          Ended: {new Date(assignment.end_date).toLocaleDateString()}
+                        </p>
+                      )}
+                      <p className="mt-1">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          assignment.utilization === 0 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {assignment.utilization === 0 ? 'Full Time' : 'Part Time'}
+                        </span>
+                      </p>
+                      <button
+                        onClick={() => setEditingContractId(assignment.id)}
+                        className="mt-2 px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors"
+                        aria-label={`Edit contract for ${assignment.clientName}`}
+                        aria-label={`Edit contract for ${assignment.clientName}`}
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
@@ -481,5 +521,225 @@ function ConsultantEditRoute() {
         )}
       </div>
     </div>
+  );
+}
+
+interface EditContractFormProps {
+  assignment: {
+    id: string;
+    role: string;
+    utilization: 0 | 1;
+    start_date: Date;
+    end_date?: Date;
+    clientName: string;
+    contractName: string;
+  };
+  onSave: (data: {
+    role: string;
+    utilization: 0 | 1;
+    start_date: Date;
+    end_date?: Date;
+  }) => Promise<void>;
+  onCancel: () => void;
+  isSubmitting: boolean;
+}
+
+function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditContractFormProps) {
+  const formatDateForInput = (date: Date | undefined): string => {
+    if (!date) return '';
+    // Handle both Date objects and string representations
+    const dateObj = date instanceof Date ? date : new Date(date);
+    return dateObj.toISOString().split('T')[0];
+  };
+
+  const form = useForm({
+    defaultValues: {
+      role: assignment.role,
+      utilization: assignment.utilization,
+      startDate: formatDateForInput(assignment.start_date),
+      endDate: formatDateForInput(assignment.end_date),
+    },
+    onSubmit: async ({ value }) => {
+      await onSave({
+        role: value.role,
+        utilization: value.utilization,
+        start_date: new Date(value.startDate),
+        end_date: value.endDate ? new Date(value.endDate) : undefined,
+      });
+    },
+  });
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-4"
+    >
+      <div className="mb-2">
+        <p className="font-medium text-gray-800">{assignment.clientName}</p>
+        <p className="text-sm text-gray-600">Contract: {assignment.contractName}</p>
+      </div>
+
+      <form.Field
+        name="role"
+        validators={{
+          onChange: ({ value }) =>
+            !value
+              ? 'Role is required'
+              : value.length < 2
+                ? 'Role must be at least 2 characters'
+                : undefined,
+        }}
+      >
+        {(field) => (
+          <div>
+            <label
+              htmlFor={`role-${assignment.id}`}
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Role
+            </label>
+            <input
+              id={`role-${assignment.id}`}
+              type="text"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+            />
+            {field.state.meta.errors.length > 0 && (
+              <p className="mt-1 text-sm text-red-600">
+                {field.state.meta.errors.join(', ')}
+              </p>
+            )}
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="utilization">
+        {(field) => (
+          <div>
+            <label
+              htmlFor={`utilization-${assignment.id}`}
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Utilization
+            </label>
+            <select
+              id={`utilization-${assignment.id}`}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                field.handleChange(val === 0 ? 0 : 1);
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+            >
+              <option value={0}>Full Time</option>
+              <option value={1}>Part Time</option>
+            </select>
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="startDate"
+        validators={{
+          onChange: ({ value }) =>
+            !value ? 'Start date is required' : undefined,
+        }}
+      >
+        {(field) => (
+          <div>
+            <label
+              htmlFor={`startDate-${assignment.id}`}
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Start Date
+            </label>
+            <input
+              id={`startDate-${assignment.id}`}
+              type="date"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+            />
+            {field.state.meta.errors.length > 0 && (
+              <p className="mt-1 text-sm text-red-600">
+                {field.state.meta.errors.join(', ')}
+              </p>
+            )}
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="endDate"
+        validators={{
+          onChange: ({ value, fieldApi }) => {
+            if (!value) return undefined;
+            const startDate = fieldApi.form.getFieldValue('startDate');
+            if (startDate && new Date(value) < new Date(startDate)) {
+              return 'End date must be after start date';
+            }
+            return undefined;
+          },
+        }}
+      >
+        {(field) => (
+          <div>
+            <label
+              htmlFor={`endDate-${assignment.id}`}
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              End Date (optional)
+            </label>
+            <input
+              id={`endDate-${assignment.id}`}
+              type="date"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+            />
+            {field.state.meta.errors.length > 0 && (
+              <p className="mt-1 text-sm text-red-600">
+                {field.state.meta.errors.join(', ')}
+              </p>
+            )}
+          </div>
+        )}
+      </form.Field>
+
+      <div className="flex gap-2 pt-2">
+        <form.Subscribe
+          selector={(state) => [state.canSubmit]}
+        >
+          {([canSubmit]) => (
+            <>
+              <button
+                type="submit"
+                disabled={!canSubmit || isSubmitting}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button
+                type="button"
+                onClick={onCancel}
+                disabled={isSubmitting}
+                className="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 disabled:opacity-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </>
+          )}
+        </form.Subscribe>
+      </div>
+    </form>
   );
 }

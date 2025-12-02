@@ -165,6 +165,22 @@ export async function createConsultantContract(
 }
 
 /**
+ * Updates a consultant contract by ID
+ */
+export async function updateConsultantContract(
+  id: string,
+  data: Partial<Omit<ConsultantContract, 'id' | 'consultant_id' | 'contract_id'>>
+): Promise<ConsultantContract | null> {
+  await simulateApiDelay();
+  const index = mockConsultantContracts.findIndex((cc) => cc.id === id);
+  if (index === -1) {
+    return null;
+  }
+  mockConsultantContracts[index] = { ...mockConsultantContracts[index], ...data };
+  return mockConsultantContracts[index];
+}
+
+/**
  * Assigns a consultant to a client.
  * Creates a new Contract for the client if one doesn't exist,
  * then creates a ConsultantContract linking the consultant to that contract.
