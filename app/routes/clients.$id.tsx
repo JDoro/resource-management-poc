@@ -21,7 +21,7 @@ function ClientDetailRoute() {
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <p className="text-gray-600">Loading client details...</p>
+        <p className="text-dark-grey/70">Loading client details...</p>
       </div>
     );
   }
@@ -29,13 +29,13 @@ function ClientDetailRoute() {
   if (!client) {
     return (
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Client Not Found</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="text-2xl font-bold text-dark-grey mb-4">Client Not Found</h2>
+        <p className="text-dark-grey/70 mb-6">
           No client found with ID: {id}
         </p>
         <Link
           to="/"
-          className="text-blue-600 hover:text-blue-800 font-medium"
+          className="text-primary hover:text-primary-light font-medium"
         >
           ← Back to Home
         </Link>
@@ -73,33 +73,33 @@ function ClientDetailRoute() {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-primary hover:text-primary-light font-medium"
           >
             ← Back to Home
           </Link>
           <Link
             to="/clients/$id/edit"
             params={{ id }}
-            className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
           >
             Edit Client
           </Link>
         </div>
 
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl font-bold text-dark-grey mb-2">
             {client.name}
           </h2>
-          <p className="text-gray-600 mb-2">
+          <p className="text-dark-grey/70 mb-2">
             {client.description}
           </p>
-          <p className="text-gray-500 text-sm">
+          <p className="text-dark-grey/60 text-sm">
             📍 {client.address}
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="bg-gradient-to-br from-light-blue/30 to-light-grey/50 rounded-lg p-6 border border-light-blue">
+          <h3 className="text-xl font-semibold text-dark-grey mb-4">
             Contracts ({enrichedContracts.length})
           </h3>
           
@@ -108,14 +108,14 @@ function ClientDetailRoute() {
               {enrichedContracts.map((contract) => (
                 <div
                   key={contract.id}
-                  className="bg-white rounded-lg p-4 shadow-sm border border-gray-200"
+                  className="bg-white rounded-lg p-4 shadow-sm border border-light-grey"
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <p className="font-medium text-gray-800">
+                      <p className="font-medium text-dark-grey">
                         {contract.contract_name}
                       </p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-dark-grey/70 mt-1">
                         Started: {new Date(contract.start_date).toLocaleDateString()}
                         {contract.end_date && (
                           <> · Ended: {new Date(contract.end_date).toLocaleDateString()}</>
@@ -125,26 +125,26 @@ function ClientDetailRoute() {
                   </div>
                   
                   {contract.consultants.length > 0 ? (
-                    <div className="mt-3 pt-3 border-t border-gray-100">
-                      <p className="text-sm font-medium text-gray-700 mb-2">
+                    <div className="mt-3 pt-3 border-t border-light-grey">
+                      <p className="text-sm font-medium text-dark-grey mb-2">
                         Assigned Consultants ({contract.consultants.length})
                       </p>
                       <div className="space-y-2">
                         {contract.consultants.map((consultant) => (
                           <div
                             key={consultant.id}
-                            className="flex justify-between items-center text-sm bg-gray-50 rounded px-3 py-2"
+                            className="flex justify-between items-center text-sm bg-light-grey/50 rounded px-3 py-2"
                           >
                             <div>
-                              <span className="font-medium text-gray-800">
+                              <span className="font-medium text-dark-grey">
                                 {consultant.consultantName}
                               </span>
-                              <span className="text-gray-500 ml-2">
+                              <span className="text-dark-grey/60 ml-2">
                                 ({consultant.yearsEmployed} {consultant.yearsEmployed === 1 ? 'year' : 'years'} employed)
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-gray-600">{consultant.role}</span>
+                              <span className="text-dark-grey/70">{consultant.role}</span>
                               <span className={`px-2 py-1 rounded text-xs font-medium ${
                                 consultant.utilization === 0 
                                   ? 'bg-green-100 text-green-800' 
@@ -158,7 +158,7 @@ function ClientDetailRoute() {
                       </div>
                     </div>
                   ) : (
-                    <p className="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-500 italic">
+                    <p className="mt-3 pt-3 border-t border-light-grey text-sm text-dark-grey/60 italic">
                       No consultants assigned to this contract
                     </p>
                   )}
@@ -166,7 +166,7 @@ function ClientDetailRoute() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 italic">
+            <p className="text-dark-grey/60 italic">
               No contracts for this client
             </p>
           )}

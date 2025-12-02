@@ -48,7 +48,7 @@ function RootComponent() {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+          <div className="min-h-screen bg-gradient-to-br from-light-grey to-white">
             <Header />
             <main className="container mx-auto px-6 py-10">
               <Outlet />

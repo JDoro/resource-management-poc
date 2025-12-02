@@ -68,10 +68,10 @@ function BubblechartRoute() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">
+        <h2 className="text-3xl font-bold text-dark-grey mb-4">
           Clients and Consultants
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-dark-grey/70 mb-6">
           View the list of clients and their assigned consultants.
         </p>
 
@@ -82,17 +82,17 @@ function BubblechartRoute() {
             return (
               <div
                 key={client.id}
-                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200"
+                className="bg-gradient-to-br from-light-blue/30 to-light-grey/50 rounded-lg p-6 border border-light-blue"
               >
                 <div className="mb-4">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-2xl font-semibold text-gray-800">
+                    <h3 className="text-2xl font-semibold text-dark-grey">
                       {client.name}
                     </h3>
                     <Link
                       to="/clients/$id"
                       params={{ id: client.id }}
-                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      className="text-primary hover:text-primary-light transition-colors"
                       title={`View ${client.name} details`}
                     >
                       <svg
@@ -111,16 +111,16 @@ function BubblechartRoute() {
                       </svg>
                     </Link>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-dark-grey/70 mt-1">
                     {client.description}
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-dark-grey/60 mt-1">
                     {client.address}
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="text-lg font-medium text-gray-700 mb-3">
+                  <h4 className="text-lg font-medium text-dark-grey mb-3">
                     Assigned Consultants ({consultantsForClient.length})
                   </h4>
                   {consultantsForClient.length > 0 ? (
@@ -130,13 +130,13 @@ function BubblechartRoute() {
                           key={consultant.id}
                           to="/consultants/$id"
                           params={{ id: consultant.id }}
-                          className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all"
+                          className="bg-white rounded-lg p-4 shadow-sm border border-light-grey hover:border-primary hover:shadow-md transition-all"
                         >
-                          <p className="font-medium text-gray-800 hover:text-blue-600">
+                          <p className="font-medium text-dark-grey hover:text-primary">
                             {consultant.name}
                           </p>
                           {consultant.role && (
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-sm text-dark-grey/70 mt-1">
                               {consultant.role}
                             </p>
                           )}
@@ -144,7 +144,7 @@ function BubblechartRoute() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 italic">
+                    <p className="text-dark-grey/60 italic">
                       No consultants assigned to this client
                     </p>
                   )}
