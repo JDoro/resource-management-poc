@@ -321,6 +321,7 @@ function ConsultantEditRoute() {
                         onClick={() => setEditingContractId(assignment.id)}
                         className="mt-2 px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors"
                         aria-label={`Edit contract for ${assignment.clientName}`}
+                        aria-label={`Edit contract for ${assignment.clientName}`}
                       >
                         Edit
                       </button>
