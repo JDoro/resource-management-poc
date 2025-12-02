@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 
 export function Header() {
   return (
-    <header className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white shadow-lg border-b border-blue-800">
+    <header className="bg-gradient-to-r from-secondary via-secondary to-secondary-light text-white shadow-lg border-b border-secondary">
       <div className="container mx-auto px-6 py-2">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold tracking-tight">

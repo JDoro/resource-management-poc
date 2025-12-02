@@ -101,13 +101,13 @@ function ConsultantEditRoute() {
   if (!consultant) {
     return (
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Consultant Not Found</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="text-2xl font-bold text-dark-grey mb-4">Consultant Not Found</h2>
+        <p className="text-dark-grey/70 mb-6">
           No consultant found with ID: {id}
         </p>
         <Link
           to="/"
-          className="text-blue-600 hover:text-blue-800 font-medium"
+          className="text-primary hover:text-primary-light font-medium"
         >
           ← Back to Home
         </Link>
@@ -122,17 +122,17 @@ function ConsultantEditRoute() {
           <Link
             to="/consultants/$id"
             params={{ id }}
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-primary hover:text-primary-light font-medium"
           >
             ← Back to Consultant Details
           </Link>
         </div>
 
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl font-bold text-dark-grey mb-2">
             Edit Consultant
           </h2>
-          <p className="text-gray-600">
+          <p className="text-dark-grey/70">
             Update the consultant information below
           </p>
         </div>
@@ -160,7 +160,7 @@ function ConsultantEditRoute() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Name
                 </label>
@@ -170,7 +170,7 @@ function ConsultantEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="Enter consultant name"
                 />
                 {field.state.meta.errors.length > 0 && (
@@ -197,7 +197,7 @@ function ConsultantEditRoute() {
               <div>
                 <label
                   htmlFor="years_employed"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Years Employed
                 </label>
@@ -207,7 +207,7 @@ function ConsultantEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(Number(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="Enter years employed"
                   min="0"
                   max="50"
@@ -230,14 +230,14 @@ function ConsultantEditRoute() {
                   <button
                     type="submit"
                     disabled={!canSubmit}
-                    className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isSubmitting ? 'Saving...' : 'Save Changes'}
                   </button>
                   <Link
                     to="/consultants/$id"
                     params={{ id }}
-                    className="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
+                    className="px-6 py-2 bg-light-grey text-dark-grey font-medium rounded-lg hover:bg-light-grey/80 transition-colors"
                   >
                     Cancel
                   </Link>
@@ -251,10 +251,10 @@ function ConsultantEditRoute() {
       {/* Current Client Assignments */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-dark-grey mb-2">
             Current Client Assignments ({enrichedAssignments.length})
           </h2>
-          <p className="text-gray-600">
+          <p className="text-dark-grey/70">
             Clients this consultant is currently assigned to
           </p>
         </div>
@@ -272,7 +272,7 @@ function ConsultantEditRoute() {
             {enrichedAssignments.map((assignment) => (
               <div
                 key={assignment.id}
-                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200"
+                className="bg-gradient-to-br from-light-blue/30 to-light-grey/50 rounded-lg p-4 border border-light-blue"
               >
                 {editingContractId === assignment.id ? (
                   <EditContractForm
@@ -289,17 +289,17 @@ function ConsultantEditRoute() {
                 ) : (
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-800">
+                      <p className="font-medium text-dark-grey">
                         {assignment.clientName}
                       </p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-dark-grey/70 mt-1">
                         Contract: {assignment.contractName}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-dark-grey/70">
                         Role: {assignment.role}
                       </p>
                     </div>
-                    <div className="text-right text-sm text-gray-500">
+                    <div className="text-right text-sm text-dark-grey/60">
                       <p>
                         Started: {new Date(assignment.start_date).toLocaleDateString()}
                       </p>
@@ -319,7 +319,7 @@ function ConsultantEditRoute() {
                       </p>
                       <button
                         onClick={() => setEditingContractId(assignment.id)}
-                        className="mt-2 px-3 py-1 text-xs bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors"
+                        className="mt-2 px-3 py-1 text-xs bg-primary text-white font-medium rounded hover:bg-primary-light transition-colors"
                         aria-label={`Edit contract for ${assignment.clientName}`}
                       >
                         Edit
@@ -331,7 +331,7 @@ function ConsultantEditRoute() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 italic">
+          <p className="text-dark-grey/60 italic">
             No clients assigned to this consultant yet
           </p>
         )}
@@ -340,10 +340,10 @@ function ConsultantEditRoute() {
       {/* Assign to Client Form */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-dark-grey mb-2">
             Assign to Client
           </h2>
-          <p className="text-gray-600">
+          <p className="text-dark-grey/70">
             Assign this consultant to a client. A contract will be created automatically if one doesn't exist for the selected client.
           </p>
         </div>
@@ -357,8 +357,8 @@ function ConsultantEditRoute() {
         )}
 
         {availableClients.length === 0 ? (
-          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-gray-600 italic">
+          <div className="p-4 bg-light-grey/50 border border-light-grey rounded-lg">
+            <p className="text-dark-grey/70 italic">
               This consultant is already assigned to all available clients.
             </p>
           </div>
@@ -382,7 +382,7 @@ function ConsultantEditRoute() {
               <div>
                 <label
                   htmlFor="clientId"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Client
                 </label>
@@ -391,7 +391,7 @@ function ConsultantEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 >
                   <option value="">Select a client...</option>
                   {availableClients.map((client) => (
@@ -424,7 +424,7 @@ function ConsultantEditRoute() {
               <div>
                 <label
                   htmlFor="role"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Role
                 </label>
@@ -434,7 +434,7 @@ function ConsultantEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="e.g., Senior Developer, Project Manager"
                 />
                 {field.state.meta.errors.length > 0 && (
@@ -451,7 +451,7 @@ function ConsultantEditRoute() {
               <div>
                 <label
                   htmlFor="utilization"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Utilization
                 </label>
@@ -460,7 +460,7 @@ function ConsultantEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(Number(e.target.value) as 0 | 1)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 >
                   <option value={0}>Full Time</option>
                   <option value={1}>Part Time</option>
@@ -480,7 +480,7 @@ function ConsultantEditRoute() {
               <div>
                 <label
                   htmlFor="startDate"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Start Date
                 </label>
@@ -490,7 +490,7 @@ function ConsultantEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="mt-1 text-sm text-red-600">
@@ -509,7 +509,7 @@ function ConsultantEditRoute() {
                 <button
                   type="submit"
                   disabled={!canSubmit}
-                  className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isSubmitting ? 'Assigning...' : 'Assign to Client'}
                 </button>
@@ -578,8 +578,8 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
       className="space-y-4"
     >
       <div className="mb-2">
-        <p className="font-medium text-gray-800">{assignment.clientName}</p>
-        <p className="text-sm text-gray-600">Contract: {assignment.contractName}</p>
+        <p className="font-medium text-dark-grey">{assignment.clientName}</p>
+        <p className="text-sm text-dark-grey/70">Contract: {assignment.contractName}</p>
       </div>
 
       <form.Field
@@ -597,7 +597,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
           <div>
             <label
               htmlFor={`role-${assignment.id}`}
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-dark-grey mb-1"
             >
               Role
             </label>
@@ -607,7 +607,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+              className="w-full px-3 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors text-sm"
             />
             {field.state.meta.errors.length > 0 && (
               <p className="mt-1 text-sm text-red-600">
@@ -623,7 +623,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
           <div>
             <label
               htmlFor={`utilization-${assignment.id}`}
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-dark-grey mb-1"
             >
               Utilization
             </label>
@@ -635,7 +635,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
                 const val = Number(e.target.value);
                 field.handleChange(val === 0 ? 0 : 1);
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+              className="w-full px-3 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors text-sm"
             >
               <option value={0}>Full Time</option>
               <option value={1}>Part Time</option>
@@ -655,7 +655,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
           <div>
             <label
               htmlFor={`startDate-${assignment.id}`}
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-dark-grey mb-1"
             >
               Start Date
             </label>
@@ -665,7 +665,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+              className="w-full px-3 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors text-sm"
             />
             {field.state.meta.errors.length > 0 && (
               <p className="mt-1 text-sm text-red-600">
@@ -693,7 +693,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
           <div>
             <label
               htmlFor={`endDate-${assignment.id}`}
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-dark-grey mb-1"
             >
               End Date (optional)
             </label>
@@ -703,7 +703,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
+              className="w-full px-3 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors text-sm"
             />
             {field.state.meta.errors.length > 0 && (
               <p className="mt-1 text-sm text-red-600">
@@ -723,7 +723,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
               <button
                 type="submit"
                 disabled={!canSubmit || isSubmitting}
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>
@@ -731,7 +731,7 @@ function EditContractForm({ assignment, onSave, onCancel, isSubmitting }: EditCo
                 type="button"
                 onClick={onCancel}
                 disabled={isSubmitting}
-                className="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-light-grey text-dark-grey text-sm font-medium rounded-lg hover:bg-light-grey/80 disabled:opacity-50 transition-colors"
               >
                 Cancel
               </button>

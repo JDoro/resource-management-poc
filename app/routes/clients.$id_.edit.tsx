@@ -100,13 +100,13 @@ function ClientEditRoute() {
   if (!client) {
     return (
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Client Not Found</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="text-2xl font-bold text-dark-grey mb-4">Client Not Found</h2>
+        <p className="text-dark-grey/70 mb-6">
           No client found with ID: {id}
         </p>
         <Link
           to="/"
-          className="text-blue-600 hover:text-blue-800 font-medium"
+          className="text-primary hover:text-primary-light font-medium"
         >
           ← Back to Home
         </Link>
@@ -120,17 +120,17 @@ function ClientEditRoute() {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-primary hover:text-primary-light font-medium"
           >
             ← Back to Home
           </Link>
         </div>
 
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl font-bold text-dark-grey mb-2">
             Edit Client
           </h2>
-          <p className="text-gray-600">
+          <p className="text-dark-grey/70">
             Update the client information below
           </p>
         </div>
@@ -158,7 +158,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Name
                 </label>
@@ -168,7 +168,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="Enter client name"
                 />
                 {field.state.meta.errors.length > 0 && (
@@ -195,7 +195,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Description
                 </label>
@@ -204,7 +204,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="Enter client description"
                   rows={3}
                 />
@@ -232,7 +232,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="address"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Address
                 </label>
@@ -242,7 +242,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="Enter client address"
                 />
                 {field.state.meta.errors.length > 0 && (
@@ -263,13 +263,13 @@ function ClientEditRoute() {
                   <button
                     type="submit"
                     disabled={!canSubmit}
-                    className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isSubmitting ? 'Saving...' : 'Save Changes'}
                   </button>
                   <Link
                     to="/"
-                    className="px-6 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
+                    className="px-6 py-2 bg-light-grey text-dark-grey font-medium rounded-lg hover:bg-light-grey/80 transition-colors"
                   >
                     Cancel
                   </Link>
@@ -283,10 +283,10 @@ function ClientEditRoute() {
       {/* Currently Assigned Consultants */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-dark-grey mb-2">
             Assigned Consultants ({assignedConsultants.length})
           </h2>
-          <p className="text-gray-600">
+          <p className="text-dark-grey/70">
             Consultants currently assigned to this client
           </p>
         </div>
@@ -296,18 +296,18 @@ function ClientEditRoute() {
             {assignedConsultants.map((assignment) => (
               <div
                 key={assignment.id}
-                className="flex justify-between items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200"
+                className="flex justify-between items-center bg-light-grey/50 rounded-lg px-4 py-3 border border-light-grey"
               >
                 <div>
-                  <span className="font-medium text-gray-800">
+                  <span className="font-medium text-dark-grey">
                     {assignment.consultantName}
                   </span>
-                  <span className="text-gray-500 ml-2">
+                  <span className="text-dark-grey/60 ml-2">
                     ({assignment.yearsEmployed} {assignment.yearsEmployed === 1 ? 'year' : 'years'} employed)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-600">{assignment.role}</span>
+                  <span className="text-dark-grey/70">{assignment.role}</span>
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
                     assignment.utilization === 0 
                       ? 'bg-green-100 text-green-800' 
@@ -320,7 +320,7 @@ function ClientEditRoute() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 italic">
+          <p className="text-dark-grey/60 italic">
             No consultants assigned to this client yet
           </p>
         )}
@@ -329,10 +329,10 @@ function ClientEditRoute() {
       {/* Assign Consultant Form */}
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-dark-grey mb-2">
             Assign Consultant
           </h2>
-          <p className="text-gray-600">
+          <p className="text-dark-grey/70">
             Assign a consultant to this client. A contract will be created automatically if one doesn't exist.
           </p>
         </div>
@@ -364,7 +364,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="consultantId"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Consultant
                 </label>
@@ -373,7 +373,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 >
                   <option value="">Select a consultant...</option>
                   {availableConsultants.map((consultant) => (
@@ -406,7 +406,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="role"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Role
                 </label>
@@ -416,7 +416,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                   placeholder="e.g., Senior Developer, Project Manager"
                 />
                 {field.state.meta.errors.length > 0 && (
@@ -433,7 +433,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="utilization"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Utilization
                 </label>
@@ -442,7 +442,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(Number(e.target.value) as 0 | 1)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 >
                   <option value={0}>Full Time</option>
                   <option value={1}>Part Time</option>
@@ -462,7 +462,7 @@ function ClientEditRoute() {
               <div>
                 <label
                   htmlFor="startDate"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-dark-grey mb-2"
                 >
                   Start Date
                 </label>
@@ -472,7 +472,7 @@ function ClientEditRoute() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="mt-1 text-sm text-red-600">
@@ -491,7 +491,7 @@ function ClientEditRoute() {
                 <button
                   type="submit"
                   disabled={!canSubmit}
-                  className="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isSubmitting ? 'Assigning...' : 'Assign Consultant'}
                 </button>
