@@ -123,6 +123,19 @@ export async function fetchConsultantsByClientId(
 }
 
 /**
+ * Creates a new consultant
+ */
+export async function createConsultant(
+  data: Omit<Consultant, 'id'>
+): Promise<Consultant> {
+  await simulateApiDelay();
+  const newId = String(Math.max(...mockConsultants.map((c) => Number(c.id)), 0) + 1);
+  const newConsultant: Consultant = { id: newId, ...data };
+  mockConsultants.push(newConsultant);
+  return newConsultant;
+}
+
+/**
  * Updates a consultant by ID
  */
 export async function updateConsultant(

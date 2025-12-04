@@ -19,12 +19,22 @@ function ConsultantsListComponent() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-dark-grey mb-4">
-          All Consultants
-        </h2>
-        <p className="text-dark-grey/70 mb-6">
-          Browse our team of {consultants.length} consultant{consultants.length !== 1 ? 's' : ''}.
-        </p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-3xl font-bold text-dark-grey mb-2">
+              All Consultants
+            </h2>
+            <p className="text-dark-grey/70">
+              Browse our team of {consultants.length} consultant{consultants.length !== 1 ? 's' : ''}.
+            </p>
+          </div>
+          <Link
+            to="/consultants/new"
+            className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
+          >
+            Create New Consultant
+          </Link>
+        </div>
 
         {consultants.length === 0 ? (
           <p className="text-dark-grey/70 text-center py-8">
