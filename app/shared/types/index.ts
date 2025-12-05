@@ -2,6 +2,7 @@ export interface Consultant {
   id: string;
   name: string;
   years_employed: number;
+  role?: string;
 }
 
 export interface ConsultantContract {
