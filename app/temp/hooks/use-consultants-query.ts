@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchConsultantContracts, fetchConsultants } from '../api/mock-api';
 import { consultantKeys, consultantContractsKeys } from '../api/query-keys';
+import type { ConsultantContract } from '../../shared/types';
 
 /**
  * Enriches consultant data with their current role from active contracts.
@@ -22,7 +23,7 @@ export function useConsultantsQuery() {
 
       // Build a map of consultant_id -> active contracts
       const now = new Date();
-      const activeContractsByConsultant = new Map<string, typeof consultantContracts>();
+      const activeContractsByConsultant = new Map<string, ConsultantContract[]>();
 
       consultantContracts.forEach((contract) => {
         if (contract.start_date <= now && (!contract.end_date || contract.end_date > now)) {
