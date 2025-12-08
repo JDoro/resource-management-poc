@@ -1,30 +1,39 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchConsultantContracts, fetchConsultants } from '../api/mock-api';
-import { consultantKeys } from '../api/query-keys';
+import { consultantKeys, consultantContractsKeys } from '../api/query-keys';
 
+/**
+ * Enriches consultant data with their current role from active contracts.
+ * 
+ * Active contracts are those that have started (start_date <= now) and 
+ * haven't ended yet (no end_date or end_date > now).
+ * 
+ * If multiple active contracts exist, the most recently started contract
+ * is used to determine the current role.
+ */
 export function useConsultantsQuery() {
   return useQuery({
-    queryKey: consultantKeys.all,
+    queryKey: [...consultantKeys.all, ...consultantContractsKeys.all],
     queryFn: async () => {
       const [consultants, consultantContracts] = await Promise.all([
         fetchConsultants(),
         fetchConsultantContracts(),
       ]);
 
+      // Build a map of consultant_id -> active contracts
+      const now = new Date();
+      const activeContractsByConsultant = new Map<string, typeof consultantContracts>();
+
+      consultantContracts.forEach((contract) => {
+        if (contract.start_date <= now && (!contract.end_date || contract.end_date > now)) {
+          const contracts = activeContractsByConsultant.get(contract.consultant_id) || [];
+          contracts.push(contract);
+          activeContractsByConsultant.set(contract.consultant_id, contracts);
+        }
+      });
+
       return consultants.map((consultant) => {
-        const now = new Date();
-
-        // Find all contracts for the current consultant.
-        const contractsForConsultant = consultantContracts.filter(
-          (contract) => contract.consultant_id === consultant.id
-        );
-
-        // Filter for active contracts (started in the past, not yet ended).
-        const activeContracts = contractsForConsultant.filter(
-          (contract) =>
-            contract.start_date <= now &&
-            (!contract.end_date || contract.end_date > now)
-        );
+        const activeContracts = activeContractsByConsultant.get(consultant.id) || [];
 
         // If there are multiple active contracts, sort by the most recent start_date.
         if (activeContracts.length > 1) {
