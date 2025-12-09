@@ -54,6 +54,7 @@ function ConsultantsListComponent() {
                   <h3 className="text-xl font-semibold text-dark-grey mb-2 hover:text-primary transition-colors">
                     {consultant.name}
                   </h3>
+                  {consultant.role && <p className="text-dark-grey/50">{consultant.role}</p>}
                   <p className="text-dark-grey/70 mt-auto">
                     {consultant.years_employed} {consultant.years_employed === 1 ? 'year' : 'years'} employed
                   </p>
