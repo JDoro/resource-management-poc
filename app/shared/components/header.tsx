@@ -17,6 +17,13 @@ export function Header() {
               Home
             </Link>
             <Link
+              to="/clients"
+              className="px-3 py-1 rounded font-medium text-sm transition-colors hover:bg-white/20"
+              activeProps={{ className: 'bg-white/30' }}
+            >
+              Clients
+            </Link>
+            <Link
               to="/consultants"
               className="px-3 py-1 rounded font-medium text-sm transition-colors hover:bg-white/20"
               activeProps={{ className: 'bg-white/30' }}
