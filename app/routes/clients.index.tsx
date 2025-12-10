@@ -28,6 +28,12 @@ function ClientsListComponent() {
               Browse our portfolio of {clients.length} client{clients.length !== 1 ? 's' : ''}.
             </p>
           </div>
+          <Link
+            to="/clients/new"
+            className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
+          >
+            Create New Client
+          </Link>
         </div>
 
         {clients.length === 0 ? (

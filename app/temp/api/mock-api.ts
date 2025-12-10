@@ -39,6 +39,19 @@ export async function fetchClientById(id: string): Promise<Client | null> {
 }
 
 /**
+ * Creates a new client
+ */
+export async function createClient(
+  data: Omit<Client, 'id'>
+): Promise<Client> {
+  await simulateApiDelay();
+  const newId = String(Math.max(...mockClients.map((c) => Number(c.id)), 0) + 1);
+  const newClient: Client = { id: newId, ...data };
+  mockClients.push(newClient);
+  return newClient;
+}
+
+/**
  * Updates a client by ID
  */
 export async function updateClient(
