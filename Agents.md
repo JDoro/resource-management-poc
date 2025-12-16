@@ -82,6 +82,11 @@ dynamic routing, and a seamless user experience through a modern web application
   that the chrome devtools console shows no errors or warnings.
 - Provide constructive feedback and suggestions for improvement.
 
+## Memories
+
+At the end of each task record memories in a MEMORIES.md file in the root of the
+repository. Include what was learned, challenges faced, and how they were overcome.
+
 ## Coding Standards
 
 ### Indentation
