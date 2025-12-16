@@ -89,13 +89,14 @@ function ClientDetailRoute() {
   });
 
   // Remove duplicates if consultant is on multiple contracts
-  const uniqueRoster = currentRoster.reduce((acc, curr) => {
-    const existing = acc.find((item) => item.consultantId === curr.consultantId);
-    if (!existing) {
-      acc.push(curr);
+  const seenConsultantIds = new Set<string>();
+  const uniqueRoster = currentRoster.filter((curr) => {
+    if (seenConsultantIds.has(curr.consultantId)) {
+      return false;
     }
-    return acc;
-  }, [] as typeof currentRoster);
+    seenConsultantIds.add(curr.consultantId);
+    return true;
+  });
 
   return (
     <div className="space-y-6">
