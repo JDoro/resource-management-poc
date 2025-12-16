@@ -67,6 +67,37 @@ function ClientDetailRoute() {
     };
   });
 
+  // Get all unique consultants currently working for this client
+  const currentRoster = clientContracts.flatMap((contract) => {
+    const contractConsultants = consultantContracts
+      .filter((cc) => cc.contract_id === contract.id)
+      .filter((cc) => !cc.end_date || new Date(cc.end_date) > new Date()) // Only active assignments
+      .map((cc) => {
+        const consultant = consultants.find((c) => c.id === cc.consultant_id);
+        return {
+          consultantId: cc.consultant_id,
+          consultantName: consultant?.name || 'Unknown Consultant',
+          yearsEmployed: consultant?.years_employed || 0,
+          role: cc.role,
+          utilization: cc.utilization,
+          contractName: contract.contract_name,
+          contractId: contract.id,
+          startDate: cc.start_date,
+        };
+      });
+    return contractConsultants;
+  });
+
+  // Remove duplicates if consultant is on multiple contracts
+  const seenConsultantIds = new Set<string>();
+  const uniqueRoster = currentRoster.filter((curr) => {
+    if (seenConsultantIds.has(curr.consultantId)) {
+      return false;
+    }
+    seenConsultantIds.add(curr.consultantId);
+    return true;
+  });
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-lg p-8">
@@ -96,6 +127,53 @@ function ClientDetailRoute() {
           <p className="text-dark-grey/60 text-sm">
             📍 {client.address}
           </p>
+        </div>
+
+        <div className="bg-gradient-to-br from-light-blue/30 to-light-grey/50 rounded-lg p-6 border border-light-blue mb-6">
+          <h3 className="text-xl font-semibold text-dark-grey mb-4">
+            Current Roster ({uniqueRoster.length})
+          </h3>
+          
+          {uniqueRoster.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {uniqueRoster.map((consultant) => (
+                <div
+                  key={consultant.consultantId}
+                  className="bg-white rounded-lg p-4 shadow-sm border border-light-grey"
+                >
+                  <div className="mb-2">
+                    <p className="font-semibold text-dark-grey">
+                      {consultant.consultantName}
+                    </p>
+                    <p className="text-xs text-dark-grey/60">
+                      {consultant.yearsEmployed} {consultant.yearsEmployed === 1 ? 'year' : 'years'} employed
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-dark-grey/70">
+                      <span className="font-medium">Role:</span> {consultant.role}
+                    </p>
+                    <p className="text-sm text-dark-grey/70">
+                      <span className="font-medium">Contract:</span> {consultant.contractName}
+                    </p>
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-light-grey">
+                    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                      consultant.utilization === 0 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {consultant.utilization === 0 ? 'Full Time' : 'Part Time'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-dark-grey/60 italic">
+              No consultants currently assigned to this client
+            </p>
+          )}
         </div>
 
         <div className="bg-gradient-to-br from-light-blue/30 to-light-grey/50 rounded-lg p-6 border border-light-blue">
