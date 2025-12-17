@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useClientQuery } from '../temp/hooks/use-client-query';
 import { useContractsQuery } from '../temp/hooks/use-contracts-query';
 import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
+import { AssignConsultantDialog } from '../shared/components/assign-consultant-dialog';
 
 export const Route = createFileRoute('/clients/$id')({
   component: ClientDetailRoute,
@@ -10,6 +12,7 @@ export const Route = createFileRoute('/clients/$id')({
 
 function ClientDetailRoute() {
   const { id } = Route.useParams();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const { data: client, isLoading: isLoadingClient } = useClientQuery(id);
   const { data: contracts = [], isLoading: isLoadingContracts } = useContractsQuery();
@@ -109,13 +112,12 @@ function ClientDetailRoute() {
             ← Back to Home
           </Link>
           <div className="flex gap-3">
-            <Link
-              to="/clients/$id/edit"
-              params={{ id }}
+            <button
+              onClick={() => setIsDialogOpen(true)}
               className="px-4 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-light transition-colors"
             >
               Assign Consultant
-            </Link>
+            </button>
             <Link
               to="/clients/$id/edit"
               params={{ id }}
@@ -183,13 +185,12 @@ function ClientDetailRoute() {
               <p className="text-dark-grey/60 italic mb-4">
                 No consultants currently assigned to this client
               </p>
-              <Link
-                to="/clients/$id/edit"
-                params={{ id }}
+              <button
+                onClick={() => setIsDialogOpen(true)}
                 className="inline-block px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-light transition-colors"
               >
                 Assign Your First Consultant
-              </Link>
+              </button>
             </div>
           )}
         </div>
@@ -268,6 +269,12 @@ function ClientDetailRoute() {
           )}
         </div>
       </div>
+
+      <AssignConsultantDialog
+        clientId={id}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+      />
     </div>
   );
 }
