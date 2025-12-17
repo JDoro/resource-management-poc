@@ -108,13 +108,22 @@ function ClientDetailRoute() {
           >
             ← Back to Home
           </Link>
-          <Link
-            to="/clients/$id/edit"
-            params={{ id }}
-            className="px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
-          >
-            Edit Client
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              to="/clients/$id/edit"
+              params={{ id }}
+              className="px-4 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-light transition-colors"
+            >
+              Assign Consultant
+            </Link>
+            <Link
+              to="/clients/$id/edit"
+              params={{ id }}
+              className="px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
+            >
+              Edit Client
+            </Link>
+          </div>
         </div>
 
         <div className="mb-8">
@@ -170,9 +179,18 @@ function ClientDetailRoute() {
               ))}
             </div>
           ) : (
-            <p className="text-dark-grey/60 italic">
-              No consultants currently assigned to this client
-            </p>
+            <div className="text-center py-8">
+              <p className="text-dark-grey/60 italic mb-4">
+                No consultants currently assigned to this client
+              </p>
+              <Link
+                to="/clients/$id/edit"
+                params={{ id }}
+                className="inline-block px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-light transition-colors"
+              >
+                Assign Your First Consultant
+              </Link>
+            </div>
           )}
         </div>
 
