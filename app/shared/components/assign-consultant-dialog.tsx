@@ -17,6 +17,7 @@ export function AssignConsultantDialog({
   onClose,
 }: AssignConsultantDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const timeoutRef = useRef<number | null>(null);
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
 
   const { data: consultants = [] } = useConsultantsQuery();
@@ -26,12 +27,21 @@ export function AssignConsultantDialog({
   const assignConsultantMutation = useAssignConsultantToClientMutation({
     onSuccess: () => {
       setAssignmentSuccess(true);
-      setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         setAssignmentSuccess(false);
         onClose();
       }, 2000);
     },
   });
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   // Get contract IDs for this client
   const clientContractIds = new Set(
@@ -88,17 +98,8 @@ export function AssignConsultantDialog({
 
   // Handle backdrop click
   const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    const rect = dialog.getBoundingClientRect();
-    const isInDialog =
-      rect.top <= e.clientY &&
-      e.clientY <= rect.top + rect.height &&
-      rect.left <= e.clientX &&
-      e.clientX <= rect.left + rect.width;
-
-    if (!isInDialog) {
+    // Close dialog if clicking on the backdrop (outside the dialog content)
+    if (e.target === e.currentTarget) {
       onClose();
     }
   };
@@ -244,7 +245,13 @@ export function AssignConsultantDialog({
                   id="utilization"
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value) as 0 | 1)}
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    // Ensure value is either 0 or 1
+                    if (value === 0 || value === 1) {
+                      field.handleChange(value);
+                    }
+                  }}
                   className="w-full px-4 py-2 border border-light-grey rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors"
                 >
                   <option value={0}>Full Time</option>
