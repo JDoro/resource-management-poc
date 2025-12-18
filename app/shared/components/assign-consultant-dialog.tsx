@@ -29,7 +29,7 @@ export function AssignConsultantDialog({
     onSuccess: () => {
       setAssignmentSuccess(true);
       setAssignmentError(null);
-      timeoutRef.current = window.setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setAssignmentSuccess(false);
         onClose();
       }, 2000);
@@ -119,7 +119,8 @@ export function AssignConsultantDialog({
       }
       dialog.close();
     }
-  }, [isOpen, assignmentForm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   // Handle backdrop click
   const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
@@ -194,7 +195,7 @@ export function AssignConsultantDialog({
         )}
 
         {availableConsultants.length === 0 ? (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg" role="alert" aria-live="polite">
             <p className="text-yellow-800 font-medium">
               All consultants are currently assigned to this client. No additional consultants are available to assign at this time.
             </p>
