@@ -19,6 +19,7 @@ export function AssignConsultantDialog({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const timeoutRef = useRef<number | null>(null);
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
+  const [assignmentError, setAssignmentError] = useState<string | null>(null);
 
   const { data: consultants = [] } = useConsultantsQuery();
   const { data: contracts = [] } = useContractsQuery();
@@ -27,10 +28,15 @@ export function AssignConsultantDialog({
   const assignConsultantMutation = useAssignConsultantToClientMutation({
     onSuccess: () => {
       setAssignmentSuccess(true);
+      setAssignmentError(null);
       timeoutRef.current = window.setTimeout(() => {
         setAssignmentSuccess(false);
         onClose();
       }, 2000);
+    },
+    onError: () => {
+      setAssignmentError('Failed to assign consultant. Please try again.');
+      setAssignmentSuccess(false);
     },
   });
 
@@ -55,14 +61,24 @@ export function AssignConsultantDialog({
     clientContractIds.has(cc.contract_id)
   );
 
-  // Get consultant IDs already assigned to this client
-  const assignedConsultantIds = new Set(
-    clientConsultantContracts.map((cc) => cc.consultant_id)
+  // Only treat consultants with active assignments as unavailable
+  const now = new Date();
+  const activeAssignedConsultantIds = new Set(
+    clientConsultantContracts
+      .filter((cc) => {
+        // If there is no end date, treat the assignment as active
+        if (!cc.end_date) {
+          return true;
+        }
+        const endDate = new Date(cc.end_date);
+        return endDate >= now;
+      })
+      .map((cc) => cc.consultant_id)
   );
 
-  // Filter out already assigned consultants from the dropdown
+  // Filter out consultants who are currently assigned from the dropdown
   const availableConsultants = consultants.filter(
-    (consultant) => !assignedConsultantIds.has(consultant.id)
+    (consultant) => !activeAssignedConsultantIds.has(consultant.id)
   );
 
   const assignmentForm = useForm({
@@ -92,14 +108,28 @@ export function AssignConsultantDialog({
     if (isOpen) {
       dialog.showModal();
     } else {
+      // Reset success state and form when dialog is closed
+      setAssignmentSuccess(false);
+      setAssignmentError(null);
+      assignmentForm.reset();
+      // Clear any pending timeout related to auto-close
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       dialog.close();
     }
-  }, [isOpen]);
+  }, [isOpen, assignmentForm]);
 
   // Handle backdrop click
   const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     // Close dialog if clicking on the backdrop (outside the dialog content)
     if (e.target === e.currentTarget) {
+      // Clear timeout before closing
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       onClose();
     }
   };
@@ -116,7 +146,13 @@ export function AssignConsultantDialog({
             Assign Consultant
           </h2>
           <button
-            onClick={onClose}
+            onClick={() => {
+              if (timeoutRef.current !== null) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+              }
+              onClose();
+            }}
             className="text-dark-grey/60 hover:text-dark-grey transition-colors"
             aria-label="Close dialog"
           >
@@ -142,14 +178,29 @@ export function AssignConsultantDialog({
         </p>
 
         {assignmentSuccess && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg" role="alert" aria-live="polite">
             <p className="text-green-800 font-medium">
               ✓ Consultant successfully assigned to client!
             </p>
           </div>
         )}
 
-        <form
+        {assignmentError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="polite">
+            <p className="text-red-800 font-medium">
+              ✗ {assignmentError}
+            </p>
+          </div>
+        )}
+
+        {availableConsultants.length === 0 ? (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 font-medium">
+              All consultants are currently assigned to this client. No additional consultants are available to assign at this time.
+            </p>
+          </div>
+        ) : (
+          <form
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -309,13 +360,20 @@ export function AssignConsultantDialog({
             </assignmentForm.Subscribe>
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                if (timeoutRef.current !== null) {
+                  clearTimeout(timeoutRef.current);
+                  timeoutRef.current = null;
+                }
+                onClose();
+              }}
               className="px-6 py-2 bg-light-grey text-dark-grey font-medium rounded-lg hover:bg-light-grey/80 transition-colors"
             >
               Cancel
             </button>
           </div>
         </form>
+        )}
       </div>
     </dialog>
   );
