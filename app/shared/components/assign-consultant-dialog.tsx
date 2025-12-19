@@ -17,7 +17,7 @@ export function AssignConsultantDialog({
   onClose,
 }: AssignConsultantDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
   const [assignmentError, setAssignmentError] = useState<string | null>(null);
 

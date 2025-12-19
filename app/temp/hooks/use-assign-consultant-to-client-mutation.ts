@@ -4,6 +4,7 @@ import { consultantContractsKeys, contractsKeys } from '../api/query-keys';
 
 interface UseAssignConsultantToClientMutationOptions {
   onSuccess?: () => void;
+  onError?: () => void;
 }
 
 export function useAssignConsultantToClientMutation(
@@ -18,6 +19,9 @@ export function useAssignConsultantToClientMutation(
       queryClient.invalidateQueries({ queryKey: consultantContractsKeys.all });
       queryClient.invalidateQueries({ queryKey: contractsKeys.all });
       options?.onSuccess?.();
+    },
+    onError: () => {
+      options?.onError?.();
     },
   });
 }
