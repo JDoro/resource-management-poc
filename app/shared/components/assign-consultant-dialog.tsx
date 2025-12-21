@@ -34,7 +34,7 @@ export function AssignConsultantDialog({
         onClose();
       }, 2000);
     },
-    onError: () => {
+    onError: (error) => {
       setAssignmentError('Failed to assign consultant. Please try again.');
       setAssignmentSuccess(false);
     },
