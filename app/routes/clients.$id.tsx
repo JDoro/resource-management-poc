@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { useClientQuery } from '../temp/hooks/use-client-query';
+import { fetchClientById } from '../temp/api/mock-api';
 import { useContractsQuery } from '../temp/hooks/use-contracts-query';
 import { useConsultantContractsQuery } from '../temp/hooks/use-consultant-contracts-query';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
@@ -8,26 +8,20 @@ import { AssignConsultantDialog } from '../shared/components/assign-consultant-d
 
 export const Route = createFileRoute('/clients/$id')({
   component: ClientDetailRoute,
+  loader: async ({ params }) => {
+    const client = await fetchClientById(params.id);
+    return { client };
+  },
 });
 
 function ClientDetailRoute() {
   const { id } = Route.useParams();
+  const { client } = Route.useLoaderData();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  const { data: client, isLoading: isLoadingClient } = useClientQuery(id);
-  const { data: contracts = [], isLoading: isLoadingContracts } = useContractsQuery();
-  const { data: consultantContracts = [], isLoading: isLoadingConsultantContracts } = useConsultantContractsQuery();
-  const { data: consultants = [], isLoading: isLoadingConsultants } = useConsultantsQuery();
-
-  const isLoading = isLoadingClient || isLoadingContracts || isLoadingConsultantContracts || isLoadingConsultants;
-
-  if (isLoading) {
-    return (
-      <div className="bg-white rounded-xl shadow-lg p-8">
-        <p className="text-dark-grey/70">Loading client details...</p>
-      </div>
-    );
-  }
+  const { data: contracts = [] } = useContractsQuery();
+  const { data: consultantContracts = [] } = useConsultantContractsQuery();
+  const { data: consultants = [] } = useConsultantsQuery();
 
   if (!client) {
     return (
