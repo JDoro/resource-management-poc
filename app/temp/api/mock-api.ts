@@ -6,6 +6,7 @@ import type {
   Role,
   ConsultantRole,
 } from '../../shared/types';
+import crypto from 'crypto';
 import {
   mockClients,
   mockConsultants,
@@ -45,8 +46,7 @@ export async function createClient(
   data: Omit<Client, 'id'>
 ): Promise<Client> {
   await simulateApiDelay();
-  // In a real application, this would be a UUID
-  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  const newId = crypto.randomUUID();
   const newClient: Client = { id: newId, ...data };
   mockClients.push(newClient);
   return newClient;
@@ -143,8 +143,7 @@ export async function createConsultant(
   data: Omit<Consultant, 'id'>
 ): Promise<Consultant> {
   await simulateApiDelay();
-  // In a real application, this would be a UUID
-  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  const newId = crypto.randomUUID();
   const newConsultant: Consultant = { id: newId, ...data };
   mockConsultants.push(newConsultant);
   return newConsultant;
@@ -173,8 +172,7 @@ export async function createContract(
   data: Omit<Contract, 'id'>
 ): Promise<Contract> {
   await simulateApiDelay();
-  // In a real application, this would be a UUID
-  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  const newId = crypto.randomUUID();
   const newContract: Contract = { id: newId, ...data };
   mockContracts.push(newContract);
   return newContract;
@@ -187,8 +185,7 @@ export async function createConsultantContract(
   data: Omit<ConsultantContract, 'id'>
 ): Promise<ConsultantContract> {
   await simulateApiDelay();
-  // In a real application, this would be a UUID
-  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  const newId = crypto.randomUUID();
   const newConsultantContract: ConsultantContract = { id: newId, ...data };
   mockConsultantContracts.push(newConsultantContract);
   return newConsultantContract;
