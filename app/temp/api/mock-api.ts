@@ -6,6 +6,7 @@ import type {
   Role,
   ConsultantRole,
 } from '../../shared/types';
+import crypto from 'crypto';
 import {
   mockClients,
   mockConsultants,
@@ -45,7 +46,7 @@ export async function createClient(
   data: Omit<Client, 'id'>
 ): Promise<Client> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockClients.map((c) => Number(c.id)), 0) + 1);
+  const newId = crypto.randomUUID();
   const newClient: Client = { id: newId, ...data };
   mockClients.push(newClient);
   return newClient;
@@ -142,7 +143,7 @@ export async function createConsultant(
   data: Omit<Consultant, 'id'>
 ): Promise<Consultant> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockConsultants.map((c) => Number(c.id)), 0) + 1);
+  const newId = crypto.randomUUID();
   const newConsultant: Consultant = { id: newId, ...data };
   mockConsultants.push(newConsultant);
   return newConsultant;
@@ -171,7 +172,7 @@ export async function createContract(
   data: Omit<Contract, 'id'>
 ): Promise<Contract> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockContracts.map((c) => Number(c.id)), 0) + 1);
+  const newId = crypto.randomUUID();
   const newContract: Contract = { id: newId, ...data };
   mockContracts.push(newContract);
   return newContract;
@@ -184,7 +185,7 @@ export async function createConsultantContract(
   data: Omit<ConsultantContract, 'id'>
 ): Promise<ConsultantContract> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockConsultantContracts.map((cc) => Number(cc.id)), 0) + 1);
+  const newId = crypto.randomUUID();
   const newConsultantContract: ConsultantContract = { id: newId, ...data };
   mockConsultantContracts.push(newConsultantContract);
   return newConsultantContract;
