@@ -45,7 +45,8 @@ export async function createClient(
   data: Omit<Client, 'id'>
 ): Promise<Client> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockClients.map((c) => Number(c.id)), 0) + 1);
+  // In a real application, this would be a UUID
+  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   const newClient: Client = { id: newId, ...data };
   mockClients.push(newClient);
   return newClient;
@@ -142,7 +143,8 @@ export async function createConsultant(
   data: Omit<Consultant, 'id'>
 ): Promise<Consultant> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockConsultants.map((c) => Number(c.id)), 0) + 1);
+  // In a real application, this would be a UUID
+  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   const newConsultant: Consultant = { id: newId, ...data };
   mockConsultants.push(newConsultant);
   return newConsultant;
@@ -171,7 +173,8 @@ export async function createContract(
   data: Omit<Contract, 'id'>
 ): Promise<Contract> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockContracts.map((c) => Number(c.id)), 0) + 1);
+  // In a real application, this would be a UUID
+  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   const newContract: Contract = { id: newId, ...data };
   mockContracts.push(newContract);
   return newContract;
@@ -184,7 +187,8 @@ export async function createConsultantContract(
   data: Omit<ConsultantContract, 'id'>
 ): Promise<ConsultantContract> {
   await simulateApiDelay();
-  const newId = String(Math.max(...mockConsultantContracts.map((cc) => Number(cc.id)), 0) + 1);
+  // In a real application, this would be a UUID
+  const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   const newConsultantContract: ConsultantContract = { id: newId, ...data };
   mockConsultantContracts.push(newConsultantContract);
   return newConsultantContract;
