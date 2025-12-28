@@ -1,12 +1,40 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  Link,
+  useNavigate,
+  useSearch,
+} from '@tanstack/react-router';
+import { z } from 'zod';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
+import { useClientsQuery } from '../temp/hooks/use-clients-query';
+
+const consultantsSearchSchema = z.object({
+  clientId: z.string().optional(),
+});
 
 export const Route = createFileRoute('/consultants/')({
+  validateSearch: (search: Record<string, unknown>) => {
+    const parsed = consultantsSearchSchema.safeParse(search);
+    if (parsed.success) {
+      return parsed.data;
+    }
+    return { clientId: undefined };
+  },
   component: ConsultantsListComponent,
 });
 
 function ConsultantsListComponent() {
-  const { data: consultants = [], isLoading } = useConsultantsQuery();
+  const { clientId } = useSearch({ from: Route.fullPath });
+  const { data: consultants = [], isLoading } = useConsultantsQuery(clientId);
+  const { data: clients = [] } = useClientsQuery();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newClientId = e.target.value;
+    navigate({
+      search: (prev) => ({ ...prev, clientId: newClientId || undefined }),
+    });
+  };
 
   if (isLoading) {
     return (
@@ -25,15 +53,36 @@ function ConsultantsListComponent() {
               All Consultants
             </h2>
             <p className="text-dark-grey/70">
-              Browse our team of {consultants.length} consultant{consultants.length !== 1 ? 's' : ''}.
+              Browse our team of {consultants.length} consultant
+              {consultants.length !== 1 ? 's' : ''}.
             </p>
           </div>
-          <Link
-            to="/consultants/new"
-            className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
-          >
-            Create New Consultant
-          </Link>
+          <div className="flex items-center gap-4">
+            <div>
+              <label htmlFor="client-filter" className="sr-only">
+                Filter by client
+              </label>
+              <select
+                id="client-filter"
+                onChange={handleClientChange}
+                value={clientId || ''}
+                className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md"
+              >
+                <option value="">All Clients</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Link
+              to="/consultants/new"
+              className="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition-colors"
+            >
+              Create New Consultant
+            </Link>
+          </div>
         </div>
 
         {consultants.length === 0 ? (
@@ -54,9 +103,13 @@ function ConsultantsListComponent() {
                   <h3 className="text-xl font-semibold text-dark-grey mb-2 hover:text-primary transition-colors">
                     {consultant.name}
                   </h3>
-                  {consultant.role && <p className="text-dark-grey/50">{consultant.role}</p>}
+                  {consultant.role && (
+                    <p className="text-dark-grey/50">{consultant.role}</p>
+                  )}
                   <p className="text-dark-grey/70 mt-auto">
-                    {consultant.years_employed} {consultant.years_employed === 1 ? 'year' : 'years'} employed
+                    {consultant.years_employed}{' '}
+                    {consultant.years_employed === 1 ? 'year' : 'years'}{' '}
+                    employed
                   </p>
                 </div>
               </Link>
