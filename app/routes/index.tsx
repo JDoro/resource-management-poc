@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { fetchClients, fetchConsultants, fetchContracts, fetchConsultantContracts, fetchRoles, fetchConsultantRoles } from '../temp/api/mock-api';
-import type { Client } from '../shared/types';
+import type { Client, Contract, ConsultantContract, Consultant, Role, ConsultantRole } from '../shared/types';
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -32,31 +32,31 @@ function HomeComponent() {
    * @param clientId - The ID of the client.
    * @returns Array of consultants with their roles for the client.
    */
-  const getConsultantsForClient = (clientId: string) => {
+  const getConsultantsForClient = (clientId: string): Consultant[] => {
     const clientContracts = contracts.filter(
-      (contract) => contract.client_id === clientId
+      (contract: Contract) => contract.client_id === clientId
     );
-    const clientContractIds = clientContracts.map((contract) => contract.id);
-    const ccsForClient = consultantContracts.filter((cc) =>
+    const clientContractIds = clientContracts.map((contract: Contract) => contract.id);
+    const ccsForClient = consultantContracts.filter((cc: ConsultantContract) =>
       clientContractIds.includes(cc.contract_id)
     );
 
-    return ccsForClient.map((cc) => {
+    return ccsForClient.map((cc: ConsultantContract) => {
       const consultant = consultants.find(
-        (c) => c.id === cc.consultant_id
+        (c: Consultant) => c.id === cc.consultant_id
       );
       if (!consultant) {
         return null;
       }
       const consultantRole = consultantRoles.find(
-        (cr) => cr.consultant_id === consultant.id
+        (cr: ConsultantRole) => cr.consultant_id === consultant.id
       );
-      const role = roles.find((r) => r.id === consultantRole?.role_id);
+      const role = roles.find((r: Role) => r.id === consultantRole?.role_id);
       return {
         ...consultant,
         role: role?.name || cc.role,
       };
-    }).filter(consultant => consultant !== null); // Filter out any null consultants
+    }).filter((consultant: Consultant | null): consultant is Consultant => consultant !== null); // Type guard filter
   };
 
   return (
@@ -119,7 +119,7 @@ function HomeComponent() {
                   </h4>
                   {consultantsForClient.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {consultantsForClient.map((consultant) => (
+                      {consultantsForClient.map((consultant: Consultant) => (
                         <Link
                           key={consultant.id}
                           to="/consultants/$id"
