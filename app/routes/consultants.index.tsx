@@ -4,18 +4,21 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
+import { z } from 'zod';
 import { useConsultantsQuery } from '../temp/hooks/use-consultants-query';
 import { useClientsQuery } from '../temp/hooks/use-clients-query';
 
-interface ConsultantsSearch {
-  clientId?: string;
-}
+const consultantsSearchSchema = z.object({
+  clientId: z.string().optional(),
+});
 
 export const Route = createFileRoute('/consultants/')({
-  validateSearch: (search: Record<string, unknown>): ConsultantsSearch => {
-    return {
-      clientId: search.clientId as string | undefined,
-    };
+  validateSearch: (search: Record<string, unknown>) => {
+    const parsed = consultantsSearchSchema.safeParse(search);
+    if (parsed.success) {
+      return parsed.data;
+    }
+    return { clientId: undefined };
   },
   component: ConsultantsListComponent,
 });
