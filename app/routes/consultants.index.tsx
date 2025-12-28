@@ -24,10 +24,10 @@ export const Route = createFileRoute('/consultants/')({
 });
 
 function ConsultantsListComponent() {
-  const { clientId } = useSearch({ from: Route.id });
+  const { clientId } = useSearch({ from: Route.fullPath });
   const { data: consultants = [], isLoading } = useConsultantsQuery(clientId);
   const { data: clients = [] } = useClientsQuery();
-  const navigate = useNavigate({ from: Route.id });
+  const navigate = useNavigate({ from: Route.fullPath });
 
   const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newClientId = e.target.value;
