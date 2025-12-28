@@ -18,6 +18,14 @@ export const Route = createFileRoute('/')({
   },
 });
 
+/**
+ * Retrieve consultants assigned to a client, including each consultant's resolved role when available.
+ *
+ * Resolves assignments by matching the client's contracts to consultant assignments. Entries that reference a missing consultant are omitted. For each consultant, the function first attempts to resolve a role name via consultant-role and role mappings and falls back to the role value from the consultant assignment when no mapping is found.
+ *
+ * @param clientId - The ID of the client
+ * @returns An array of consultants assigned to the client where each consultant object includes a `role` property when available
+ */
 function HomeComponent() {
   const loaderData = Route.useLoaderData();
   const clients = loaderData.clients;
