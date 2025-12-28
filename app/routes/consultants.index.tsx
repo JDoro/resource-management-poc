@@ -23,6 +23,13 @@ export const Route = createFileRoute('/consultants/')({
   component: ConsultantsListComponent,
 });
 
+/**
+ * Render the consultants list view with client filtering and links for creating or viewing consultants.
+ *
+ * Reads the current `clientId` from the route search, fetches consultants and clients, and updates the route search when the client filter changes.
+ *
+ * @returns The rendered consultants list as a JSX element
+ */
 function ConsultantsListComponent() {
   const { clientId } = useSearch({ from: Route.fullPath });
   const { data: consultants = [], isLoading } = useConsultantsQuery(clientId);
@@ -32,7 +39,7 @@ function ConsultantsListComponent() {
   const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newClientId = e.target.value;
     navigate({
-      search: (prev) => ({ ...prev, clientId: newClientId || undefined }),
+      search: (prev: { clientId?: string }) => ({ ...prev, clientId: newClientId || undefined }),
     });
   };
 

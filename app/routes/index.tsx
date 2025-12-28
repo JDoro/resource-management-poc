@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { fetchClients, fetchConsultants, fetchContracts, fetchConsultantContracts, fetchRoles, fetchConsultantRoles } from '../temp/api/mock-api';
-import type { Client } from '../shared/types';
+import type { Client, Contract, ConsultantContract, Consultant, Role, ConsultantRole } from '../shared/types';
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -18,6 +18,14 @@ export const Route = createFileRoute('/')({
   },
 });
 
+/**
+ * Retrieve consultants assigned to a client, including each consultant's resolved role when available.
+ *
+ * Resolves assignments by matching the client's contracts to consultant assignments. Entries that reference a missing consultant are omitted. For each consultant, the function first attempts to resolve a role name via consultant-role and role mappings and falls back to the role value from the consultant assignment when no mapping is found.
+ *
+ * @param clientId - The ID of the client
+ * @returns An array of consultants assigned to the client where each consultant object includes a `role` property when available
+ */
 function HomeComponent() {
   const loaderData = Route.useLoaderData();
   const clients = loaderData.clients;
@@ -32,31 +40,31 @@ function HomeComponent() {
    * @param clientId - The ID of the client.
    * @returns Array of consultants with their roles for the client.
    */
-  const getConsultantsForClient = (clientId: string) => {
+  const getConsultantsForClient = (clientId: string): Consultant[] => {
     const clientContracts = contracts.filter(
-      (contract) => contract.client_id === clientId
+      (contract: Contract) => contract.client_id === clientId
     );
-    const clientContractIds = clientContracts.map((contract) => contract.id);
-    const ccsForClient = consultantContracts.filter((cc) =>
+    const clientContractIds = clientContracts.map((contract: Contract) => contract.id);
+    const ccsForClient = consultantContracts.filter((cc: ConsultantContract) =>
       clientContractIds.includes(cc.contract_id)
     );
 
-    return ccsForClient.map((cc) => {
+    return ccsForClient.map((cc: ConsultantContract) => {
       const consultant = consultants.find(
-        (c) => c.id === cc.consultant_id
+        (c: Consultant) => c.id === cc.consultant_id
       );
       if (!consultant) {
         return null;
       }
       const consultantRole = consultantRoles.find(
-        (cr) => cr.consultant_id === consultant.id
+        (cr: ConsultantRole) => cr.consultant_id === consultant.id
       );
-      const role = roles.find((r) => r.id === consultantRole?.role_id);
+      const role = roles.find((r: Role) => r.id === consultantRole?.role_id);
       return {
         ...consultant,
         role: role?.name || cc.role,
       };
-    }).filter(consultant => consultant !== null); // Filter out any null consultants
+    }).filter((consultant: Consultant | null): consultant is Consultant => consultant !== null); // Type guard filter
   };
 
   return (
