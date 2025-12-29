@@ -49,7 +49,7 @@ function HomeComponent() {
       clientContractIds.includes(cc.contract_id)
     );
 
-    return ccsForClient.map((cc: ConsultantContract) => {
+    const consultantsWithRoles: (Consultant | null)[] = ccsForClient.map((cc: ConsultantContract) => {
       const consultant = consultants.find(
         (c: Consultant) => c.id === cc.consultant_id
       );
@@ -64,7 +64,8 @@ function HomeComponent() {
         ...consultant,
         role: role?.name || cc.role,
       };
-    }).filter((consultant: Consultant | null): consultant is Consultant => consultant !== null); // Type guard filter
+    });
+    return consultantsWithRoles.filter((consultant): consultant is Consultant => consultant !== null);
   };
 
   return (
