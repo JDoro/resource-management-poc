@@ -37,6 +37,14 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const queryClient = getQueryClient();
+  
+  // Determine if we're in development mode
+  const isDev = import.meta.env.DEV;
+  
+  // Build CSP based on environment
+  const csp = isDev
+    ? "default-src 'self'; connect-src 'self' ws: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none';"
+    : "default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none';";
 
   return (
     <html lang="en">
@@ -45,7 +53,7 @@ function RootComponent() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none';"
+          content={csp}
         />
         <title>Resource Management POC</title>
         <HeadContent />
