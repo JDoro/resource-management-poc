@@ -50,6 +50,8 @@ const CSP_CONFIG = {
 };
 
 function buildCSP(isDev: boolean): string {
+  // In dev mode, spread dev config after base to override specific directives
+  // (e.g., connect-src becomes "'self' ws: wss:" instead of just "'self'")
   const config = isDev
     ? { ...CSP_CONFIG.base, ...CSP_CONFIG.dev }
     : CSP_CONFIG.base;
