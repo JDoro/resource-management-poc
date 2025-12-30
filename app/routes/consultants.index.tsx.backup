@@ -12,7 +12,7 @@ const consultantsSearchSchema = z.object({
   clientId: z.string().optional(),
 });
 
-export const Route = createFileRoute('/consultants')({
+export const Route = createFileRoute('/consultants/')({
   validateSearch: (search: Record<string, unknown>) => {
     const parsed = consultantsSearchSchema.safeParse(search);
     if (parsed.success) {
