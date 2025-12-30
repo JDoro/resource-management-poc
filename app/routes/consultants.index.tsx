@@ -39,7 +39,7 @@ function ConsultantsListComponent() {
   const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newClientId = e.target.value;
     navigate({
-      to: '/consultants/',
+      to: '/consultants',
       search: { clientId: newClientId || undefined },
     });
   };
