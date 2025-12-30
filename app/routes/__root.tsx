@@ -31,20 +31,41 @@ function getQueryClient() {
   }
 }
 
+// Content Security Policy configuration
+const CSP_CONFIG = {
+  base: {
+    'default-src': "'self'",
+    'connect-src': "'self'",
+    'script-src': "'self'",
+    'style-src': "'self'",
+    'style-src-attr': "'unsafe-inline'",
+    'img-src': "'self' data:",
+    'font-src': "'self' data:",
+    'object-src': "'none'",
+  },
+  dev: {
+    'connect-src': "'self' ws: wss:",
+    'script-src': "'self' 'unsafe-inline' 'unsafe-eval'",
+  },
+};
+
+function buildCSP(isDev: boolean): string {
+  const config = isDev
+    ? { ...CSP_CONFIG.base, ...CSP_CONFIG.dev }
+    : CSP_CONFIG.base;
+  
+  return Object.entries(config)
+    .map(([key, value]) => `${key} ${value}`)
+    .join('; ') + ';';
+}
+
 export const Route = createRootRoute({
   component: RootComponent,
 });
 
 function RootComponent() {
   const queryClient = getQueryClient();
-  
-  // Determine if we're in development mode
-  const isDev = import.meta.env.DEV;
-  
-  // Build CSP based on environment
-  const csp = isDev
-    ? "default-src 'self'; connect-src 'self' ws: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none';"
-    : "default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; object-src 'none';";
+  const csp = buildCSP(import.meta.env.DEV);
 
   return (
     <html lang="en">
