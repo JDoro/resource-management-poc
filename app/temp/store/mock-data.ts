@@ -6,56 +6,55 @@ import type {
   Role,
   ConsultantRole,
 } from '../../shared/types';
-import crypto from 'crypto';
 
 const clientIds = {
-  '1': crypto.randomUUID(),
-  '2': crypto.randomUUID(),
-  '3': crypto.randomUUID(),
-  '4': crypto.randomUUID(),
+  '1': globalThis.crypto.randomUUID(),
+  '2': globalThis.crypto.randomUUID(),
+  '3': globalThis.crypto.randomUUID(),
+  '4': globalThis.crypto.randomUUID(),
 };
 
 const consultantIds = {
-  '1': crypto.randomUUID(),
-  '2': crypto.randomUUID(),
-  '3': crypto.randomUUID(),
-  '4': crypto.randomUUID(),
-  '5': crypto.randomUUID(),
-  '6': crypto.randomUUID(),
-  '7': crypto.randomUUID(),
-  '8': crypto.randomUUID(),
-  '9': crypto.randomUUID(),
+  '1': globalThis.crypto.randomUUID(),
+  '2': globalThis.crypto.randomUUID(),
+  '3': globalThis.crypto.randomUUID(),
+  '4': globalThis.crypto.randomUUID(),
+  '5': globalThis.crypto.randomUUID(),
+  '6': globalThis.crypto.randomUUID(),
+  '7': globalThis.crypto.randomUUID(),
+  '8': globalThis.crypto.randomUUID(),
+  '9': globalThis.crypto.randomUUID(),
 };
 
 const contractIds = {
-  '1': crypto.randomUUID(),
-  '2': crypto.randomUUID(),
-  '3': crypto.randomUUID(),
-  '4': crypto.randomUUID(),
+  '1': globalThis.crypto.randomUUID(),
+  '2': globalThis.crypto.randomUUID(),
+  '3': globalThis.crypto.randomUUID(),
+  '4': globalThis.crypto.randomUUID(),
 };
 
 const consultantContractIds = {
-  '1': crypto.randomUUID(),
-  '2': crypto.randomUUID(),
-  '3': crypto.randomUUID(),
-  '4': crypto.randomUUID(),
-  '5': crypto.randomUUID(),
-  '6': crypto.randomUUID(),
-  '7': crypto.randomUUID(),
-  '8': crypto.randomUUID(),
-  '9': crypto.randomUUID(),
+  '1': globalThis.crypto.randomUUID(),
+  '2': globalThis.crypto.randomUUID(),
+  '3': globalThis.crypto.randomUUID(),
+  '4': globalThis.crypto.randomUUID(),
+  '5': globalThis.crypto.randomUUID(),
+  '6': globalThis.crypto.randomUUID(),
+  '7': globalThis.crypto.randomUUID(),
+  '8': globalThis.crypto.randomUUID(),
+  '9': globalThis.crypto.randomUUID(),
 };
 
 const roleIds = {
-  '1': crypto.randomUUID(),
-  '2': crypto.randomUUID(),
-  '3': crypto.randomUUID(),
+  '1': globalThis.crypto.randomUUID(),
+  '2': globalThis.crypto.randomUUID(),
+  '3': globalThis.crypto.randomUUID(),
 };
 
 const consultantRoleIds = {
-  '1': crypto.randomUUID(),
-  '2': crypto.randomUUID(),
-  '3': crypto.randomUUID(),
+  '1': globalThis.crypto.randomUUID(),
+  '2': globalThis.crypto.randomUUID(),
+  '3': globalThis.crypto.randomUUID(),
 };
 
 export const mockClients: Client[] = [
