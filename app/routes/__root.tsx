@@ -31,18 +31,53 @@ function getQueryClient() {
   }
 }
 
+// Content Security Policy configuration
+const CSP_CONFIG = {
+  base: {
+    'default-src': "'self'",
+    'connect-src': "'self'",
+    'script-src': "'self'",
+    'style-src': "'self'",
+    'style-src-attr': "'unsafe-inline'",
+    'img-src': "'self' data:",
+    'font-src': "'self' data:",
+    'object-src': "'none'",
+  },
+  dev: {
+    'connect-src': "'self' ws: wss:",
+    'script-src': "'self' 'unsafe-inline' 'unsafe-eval'",
+  },
+};
+
+function buildCSP(isDev: boolean): string {
+  // In dev mode, spread dev config after base to override specific directives
+  // (e.g., connect-src becomes "'self' ws: wss:" instead of just "'self'")
+  const config = isDev
+    ? { ...CSP_CONFIG.base, ...CSP_CONFIG.dev }
+    : CSP_CONFIG.base;
+  
+  return Object.entries(config)
+    .map(([key, value]) => `${key} ${value}`)
+    .join('; ') + ';';
+}
+
 export const Route = createRootRoute({
   component: RootComponent,
 });
 
 function RootComponent() {
   const queryClient = getQueryClient();
+  const csp = buildCSP(import.meta.env.DEV);
 
   return (
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={csp}
+        />
         <title>Resource Management POC</title>
         <HeadContent />
       </head>
