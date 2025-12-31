@@ -1,0 +1,15 @@
+
+> resource-management-poc@1.0.0 dev
+> vite dev
+
+
+  VITE v7.2.2  ready in 2307 ms
+
+  ➜  Local:   http://localhost:3000/resource-management-poc/
+  ➜  Network: use --host to expose
+[vite] connected.
+3:35:31 PM [vite] (client) hmr update /app/shared/styles/styles.css, /app/routes/consultants.$id.tsx?tsr-split=component
+3:35:31 PM [vite] (ssr) page reload app/shared/utils/sanitize.ts
+[vite] program reload
+3:36:02 PM [vite] (client) hmr update /app/routes/consultants.$id.tsx, /app/routes/consultants.$id.tsx?tsr-split=component, /app/shared/styles/styles.css
+3:36:02 PM [vite] (ssr) page reload app/routes/consultants.$id.tsx
