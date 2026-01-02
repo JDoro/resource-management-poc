@@ -39,7 +39,7 @@ const consultantSchema = z.object({
 function validateCreateConsultant(data: Omit<Consultant, 'id'>) {
   const result = consultantSchema.safeParse(data);
   if (!result.success) {
-    throw new ValidationError(result.error.errors.map(e => e.message).join(', '));
+    throw new ValidationError(result.error.issues.map(e => e.message).join(', '));
   }
   return result.data;
 }
@@ -50,7 +50,7 @@ function validateCreateConsultant(data: Omit<Consultant, 'id'>) {
 function validateUpdateConsultant(data: Partial<Omit<Consultant, 'id'>>) {
   const result = consultantSchema.partial().safeParse(data);
   if (!result.success) {
-    throw new ValidationError(result.error.errors.map(e => e.message).join(', '));
+    throw new ValidationError(result.error.issues.map(e => e.message).join(', '));
   }
   return result.data;
 }
