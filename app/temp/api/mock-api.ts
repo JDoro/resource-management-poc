@@ -6,6 +6,7 @@ import type {
   Role,
   ConsultantRole,
 } from '../../shared/types';
+import { z } from 'zod';
 import crypto from 'crypto';
 import {
   mockClients,
@@ -15,6 +16,44 @@ import {
   mockRoles,
   mockConsultantRoles,
 } from '../store/mock-data';
+
+/**
+ * Custom error for validation failures.
+ */
+class ValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ValidationError';
+  }
+}
+
+// Zod schema for consultant validation
+const consultantSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters.'),
+  years_employed: z.number().int().min(0, 'Years employed cannot be negative.').max(50, 'Years employed cannot exceed 50.'),
+}).passthrough();
+
+/**
+ * Validates data for creating a consultant
+ */
+function validateCreateConsultant(data: Omit<Consultant, 'id'>) {
+  const result = consultantSchema.safeParse(data);
+  if (!result.success) {
+    throw new ValidationError(result.error.errors.map(e => e.message).join(', '));
+  }
+  return result.data;
+}
+
+/**
+ * Validates data for updating a consultant
+ */
+function validateUpdateConsultant(data: Partial<Omit<Consultant, 'id'>>) {
+  const result = consultantSchema.partial().safeParse(data);
+  if (!result.success) {
+    throw new ValidationError(result.error.errors.map(e => e.message).join(', '));
+  }
+  return result.data;
+}
 
 /**
  * Simulates an async API call with a delay
@@ -142,9 +181,10 @@ export async function fetchConsultantsByClientId(
 export async function createConsultant(
   data: Omit<Consultant, 'id'>
 ): Promise<Consultant> {
+  const validatedData = validateCreateConsultant(data);
   await simulateApiDelay();
   const newId = crypto.randomUUID();
-  const newConsultant: Consultant = { id: newId, ...data };
+  const newConsultant: Consultant = { id: newId, ...validatedData };
   mockConsultants.push(newConsultant);
   return newConsultant;
 }
@@ -156,12 +196,13 @@ export async function updateConsultant(
   id: string,
   data: Partial<Omit<Consultant, 'id'>>
 ): Promise<Consultant | null> {
+  const validatedData = validateUpdateConsultant(data);
   await simulateApiDelay();
   const index = mockConsultants.findIndex((consultant) => consultant.id === id);
   if (index === -1) {
     return null;
   }
-  mockConsultants[index] = { ...mockConsultants[index], ...data };
+  mockConsultants[index] = { ...mockConsultants[index], ...validatedData };
   return mockConsultants[index];
 }
 
