@@ -33,6 +33,19 @@ const consultantSchema = z.object({
   years_employed: z.number().int().min(0, 'Years employed cannot be negative.').max(50, 'Years employed cannot exceed 50.'),
 }).passthrough();
 
+// Zod schema for assigning a consultant to a client
+const assignConsultantToClientSchema = z.object({
+  consultantId: z.string().uuid('Invalid Consultant ID format.'),
+  clientId: z.string().uuid('Invalid Client ID format.'),
+  role: z.string().min(2, 'Role must be at least 2 characters.'),
+  utilization: z.union([z.literal(0), z.literal(1)], {
+    errorMap: () => ({ message: 'Utilization must be either 0 or 1.' }),
+  }),
+  startDate: z.date({
+    errorMap: () => ({ message: 'Start date must be a valid date.' }),
+  }),
+});
+
 /**
  * Validates data for creating a consultant
  */
@@ -264,9 +277,25 @@ export interface AssignConsultantToClientParams {
 export async function assignConsultantToClient(
   params: AssignConsultantToClientParams
 ): Promise<{ contract: Contract; consultantContract: ConsultantContract }> {
-  await simulateApiDelay();
+  // Validate input data
+  const validationResult = assignConsultantToClientSchema.safeParse(params);
+  if (!validationResult.success) {
+    throw new ValidationError(validationResult.error.errors.map(e => e.message).join(', '));
+  }
 
-  const { consultantId, clientId, role, utilization, startDate } = params;
+  const { consultantId, clientId, role, utilization, startDate } = validationResult.data;
+
+  // Verify that the consultant and client exist
+  const consultantExists = mockConsultants.some(c => c.id === consultantId);
+  if (!consultantExists) {
+    throw new ValidationError('Consultant not found.');
+  }
+  const clientExists = mockClients.some(c => c.id === clientId);
+  if (!clientExists) {
+    throw new ValidationError('Client not found.');
+  }
+
+  await simulateApiDelay();
 
   // Check if a contract exists for this client
   let contract = mockContracts.find((c) => c.client_id === clientId);
