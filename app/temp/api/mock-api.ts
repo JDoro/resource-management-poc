@@ -276,7 +276,7 @@ export async function assignConsultantToClient(
   // Validate input data
   const validationResult = assignConsultantToClientSchema.safeParse(params);
   if (!validationResult.success) {
-    throw new ValidationError(validationResult.error.issues.map((e: { message: string }) => e.message).join(', '));
+    throw new ValidationError(validationResult.error.issues.map(e => e.message).join(', '));
   }
 
   const { consultantId, clientId, role, utilization, startDate } = validationResult.data;
