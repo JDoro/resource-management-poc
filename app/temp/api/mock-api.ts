@@ -38,7 +38,7 @@ const assignConsultantToClientSchema = z.object({
   consultantId: z.string().uuid('Invalid Consultant ID format.'),
   clientId: z.string().uuid('Invalid Client ID format.'),
   role: z.string().min(2, 'Role must be at least 2 characters.'),
-  utilization: z.union([z.literal(0), z.literal(1)], 'Utilization must be either 0 or 1.'),
+  utilization: z.union([z.literal(0), z.literal(1)]).describe('Utilization must be either 0 or 1.'),
   startDate: z.date(),
 });
 
