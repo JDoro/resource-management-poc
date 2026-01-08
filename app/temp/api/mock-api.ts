@@ -38,12 +38,8 @@ const assignConsultantToClientSchema = z.object({
   consultantId: z.string().uuid('Invalid Consultant ID format.'),
   clientId: z.string().uuid('Invalid Client ID format.'),
   role: z.string().min(2, 'Role must be at least 2 characters.'),
-  utilization: z.union([z.literal(0), z.literal(1)], {
-    errorMap: () => ({ message: 'Utilization must be either 0 or 1.' }),
-  }),
-  startDate: z.date({
-    errorMap: () => ({ message: 'Start date must be a valid date.' }),
-  }),
+  utilization: z.union([z.literal(0), z.literal(1)]).describe('Utilization must be either 0 or 1.'),
+  startDate: z.date(),
 });
 
 /**
@@ -280,7 +276,7 @@ export async function assignConsultantToClient(
   // Validate input data
   const validationResult = assignConsultantToClientSchema.safeParse(params);
   if (!validationResult.success) {
-    throw new ValidationError(validationResult.error.errors.map(e => e.message).join(', '));
+    throw new ValidationError(validationResult.error.issues.map(e => e.message).join(', '));
   }
 
   const { consultantId, clientId, role, utilization, startDate } = validationResult.data;
